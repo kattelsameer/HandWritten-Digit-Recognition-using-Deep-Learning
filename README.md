@@ -1,2 +1,4 @@
 # HandWritten-Digit-Recognition-using-Deep-Learning
-MNIST based Handwritten Digit Recognition from Scratch
+**Final Year Project**
+
+>> MNIST based Handwritten Digit Recognition from Scratch
