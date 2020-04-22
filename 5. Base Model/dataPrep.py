@@ -196,7 +196,7 @@ def visual_charts(train_y_orig, dev_y_orig, test_y_orig):
     datasets = {"Training Set":train_y_orig,"Dev Set": dev_y_orig,"Test Set": test_y_orig}
     
     #setting the plot style
-    plt.style.use('seaborn')
+#     plt.style.use('seaborn')
     
     #creating subplots
     fig, axes = plt.subplots(nrows=3, ncols=1,figsize=(10,15))
@@ -228,7 +228,7 @@ def visualize_dataset(x_orig, y_orig, dataset = "training"):
         
     """
     #recovering matplotlib defaults
-    plt.rcParams.update(plt.rcParamsDefault) 
+#     plt.rcParams.update(plt.rcParamsDefault) 
     
     #checking dataset type
     if(dataset == "training"):
