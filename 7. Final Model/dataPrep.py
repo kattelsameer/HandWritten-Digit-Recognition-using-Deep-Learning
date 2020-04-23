@@ -8,6 +8,7 @@ Created on Thu Mar 26 15:04:49 2020
 # Python Standard Libraries for importing data from binary file
 import os.path #for accessing the file path
 import struct  #for unpacking the binary data
+
 #core packages
 import numpy as np
 import matplotlib.pyplot as plt
@@ -30,7 +31,6 @@ def retrive_data(dataset="training-set"):
             - **images** -- 3D array consisting of no. of examples, rows, columns of images 
             - **labels** -- array  containing labels for each images
     """
-   # digits = np.arange(10)
     path = "dataset/"
     size = 60000
     
@@ -83,7 +83,7 @@ def dev_test_split(test_x,test_y):
     suffled_x = test_x[randCol,:,:]
     suffled_y = test_y[randCol,:]
     
-    #splitting into dev and test set
+    #splitting the test set into dev and test set , 50% each
     dev_x = suffled_x[0:n,:,:]
     dev_y = suffled_y[0:n,:]
     
@@ -98,6 +98,37 @@ def dev_test_split(test_x,test_y):
     return dev_x,dev_y,test_x,test_y
 
 #-----------------------------------------------------------------------------------------------------------------
+#retriving a small sample of the original dataset for model development and experimentation
+def sample_origDataset(x,y, sample_size):
+    """
+        Returns a sample dataset from the fully processed dataset
+       
+        Arguments:
+            - **x** -- original input data
+            - **y** -- original output labels
+            - **sample_size** -- sample volume in percentage
+        Returns:
+            - **x_sample** -- input sample  from original dataset of size ( dataVol% of x)
+            - **y_sample** -- output sample  from original dataset of size (datavol% of y)
+    """
+    m = y.shape[0]
+    sample_m = int(np.multiply(m,np.divide(sample_size,100))) #int(m*(dataVol/100)) 
+    
+    #suffling the original dataset
+    randCol = np.random.permutation(m)
+    x_suffled = x[randCol,:,:]
+    y_suffled = y[randCol,:]
+    
+    #taking samples of sample_size
+    x_sample = x_suffled[0:sample_m,:,:]
+    y_sample = y_suffled[0:sample_m,:]
+
+    assert(x_sample.shape == (sample_m,28,28))
+    assert(y_sample.shape == (sample_m,1))
+
+    return x_sample, y_sample
+#-----------------------------------------------------------------------------------------------------------------
+
 #loading the entire dataset
 def load_dataset():
     """
@@ -122,37 +153,105 @@ def load_dataset():
     return train_x_orig, train_y_orig, dev_x_orig,dev_y_orig,test_x_orig,test_y_orig
 
 #-----------------------------------------------------------------------------------------------------------------
+
+#loading sample dataset
+def load_sample_dataset(sample_size):
+    """
+        Retrive the sample dataset from file into training, dev and test sets.
+        
+        Argument:
+            - **sample_size** -- sample volume in percentage
+
+        Returns: 
+        - **train_x_sample** -- input sample from training set of size ( sample_size% of train_x_orig)
+        - **train_y_sample** -- output sample from training set of size (sample_size% of train_y_orig)
+        - **dev_x_sample** -- input sample from dev set of size ( sample_size% of dev_x_orig)
+        - **dev_y_sample** -- output sample from dev set of size (sample_size% of dev_y_orig)
+        - **test_x_sample** -- input sample from test set of size ( sample_size% of test_x_orig)
+        - **test_y_sample** -- output sample from test set of size (sample_size% of test_y_orig)        
+    """
+    #loading the original dataset
+    train_x_orig, train_y_orig, dev_x_orig,dev_y_orig,test_x_orig,test_y_orig = load_dataset()
+
+    
+    #sampling from the dataset
+    train_x_sample, train_y_sample = sample_origDataset(train_x_orig, train_y_orig, sample_size)
+    dev_x_sample,dev_y_sample = sample_origDataset(dev_x_orig, dev_y_orig, sample_size)
+    test_x_sample,test_y_sample = sample_origDataset(test_x_orig, test_y_orig, sample_size)
+    
+
+    return train_x_sample, train_y_sample, dev_x_sample, dev_y_sample, test_x_sample, test_y_sample
+
+#-----------------------------------------------------------------------------------------------------------------
+#dataset visualization using charts
+def visual_charts(train_y_orig, dev_y_orig, test_y_orig):
+    """
+        Plots bar graph showing the number of examples in each class
+
+        Arguments:
+            trainy_orig - labels of training set
+            dev_y_orig - labels of dev set
+            test_y_orig - labels of test set
+    """
+    datasets = {"Training Set":train_y_orig,"Dev Set": dev_y_orig,"Test Set": test_y_orig}
+    
+    #setting the plot style
+#     plt.style.use('seaborn')
+    
+    #creating subplots
+    fig, axes = plt.subplots(nrows=3, ncols=1,figsize=(10,15))
+    fig.subplots_adjust(hspace = .3, top = 0.9)
+    i = 0
+    
+    #plotting the bar graph for each dataset labels
+    for dataset,datalabel in datasets.items():
+        unique, counts = np.unique(datalabel, return_counts=True)    
+        axes[i].bar(unique, counts)
+        max_value = np.max(counts)
+        axes[i].set(xticks = unique, ylim = (0,max_value + max_value // 10))
+        axes[i].set_title("Number of Examples in " + dataset , fontsize = 16, pad = 10)
+        axes[i].set_xlabel("Classes", fontsize = 12)
+        axes[i].set_ylabel("Number of Examples", fontsize = 12)
+        i += 1
+
+    plt.show()
+#-----------------------------------------------------------------------------------------------------------------
 #visualizing the loaded dataset
-def visualize_orig(x_orig, y_orig, dataset = "training"):
+def visualize_dataset(x_orig, y_orig, dataset = "training"):
     """
         Plots 10 sample images from the dataset with labels
         
         Arguments:
-            - **x_orig** -- 3D array representation of input images 
-            - **y_orig** -- array of labels 
-            - **dataset** -- type of dataset, can be training, dev or test 
+            x_orig - 3D array representation of input images
+            y_orig - array of labels
+            dataset - type of dataset, can be training, dev or test
         
     """
+    #recovering matplotlib defaults
+#     plt.rcParams.update(plt.rcParamsDefault) 
+    
+    #checking dataset type
     if(dataset == "training"):
         visual_title = "Training Data Set"
-        rng = range(1140,1150)
+        rng = range(1040,1050)
     elif(dataset == "dev"):
         visual_title = "Dev Data Set"
         rng = range(100,110)
     elif(dataset == "test"):
         visual_title = "Test Data Set"
-        rng = range(95,105)        
+        rng = range(540,550)        
     else:
         raise ValueError("Dataset set must be training or dev or test set")
-        
+     
+    #creating subplots
     fig, axes = plt.subplots(nrows=2, ncols=5,figsize=(16,8))
     fig.subplots_adjust(hspace=.1)
     fig.suptitle(visual_title)
-
-    for ax,i in zip(axes.flatten(),rng):
-        ax.imshow(x_orig[i].squeeze(),interpolation='nearest', cmap='Greys')
-        ax.set(title = "Label: "+ str(y_orig[i,0]))
     
+    #plotting the sample images along with their labels
+    for ax,i in zip(axes.flatten(),rng):
+        ax.imshow(x_orig[i].squeeze(),interpolation='nearest')
+        ax.set(title = "Label: "+ str(y_orig[i,0]))
 #-----------------------------------------------------------------------------------------------------------------
 #flatten the input images      
 def flatten_input(train_x_orig,dev_x_orig,test_x_orig):
@@ -170,10 +269,11 @@ def flatten_input(train_x_orig,dev_x_orig,test_x_orig):
             - **test_x_flatten**  -- flattened test set input data of size (784,5000) 
             
     """
-    m = train_x_orig.shape[0]
-    n = dev_x_orig.shape[0]
-    # The "-1" makes reshape flatten the remaining dimensions
+    m = train_x_orig.shape[0] #number of examples in training set
+    n = dev_x_orig.shape[0] # number of examples in dev and test set
     
+    
+    #flattening the image--The "-1" makes reshape flatten the remaining dimensions
     train_x_flatten = train_x_orig.reshape(train_x_orig.shape[0], -1).T   
     dev_x_flatten = dev_x_orig.reshape(dev_x_orig.shape[0], -1).T    
     test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T
@@ -225,11 +325,11 @@ def one_hot_encoding(y_orig,num_classes = 10):
         Returns:
             - **y_encoded** -- encoded ndarray of the labels with data elements of int type
     """
-    #the extra bit is to classify non digit images if encountered
-    y_encoded = np.zeros((num_classes + 1,y_orig.shape[1]))
-    y_encoded[y_orig,np.arange(y_orig.shape[1])] = 1
+    #encoding the labels
+    y_encoded = np.eye(num_classes)[y_orig.reshape(-1)].T
 
-    assert(y_encoded.shape == (num_classes + 1,y_orig.shape[1]))
+
+    assert(y_encoded.shape == (num_classes, y_orig.shape[1]))
     return y_encoded
 
 #-----------------------------------------------------------------------------------------------------------------
@@ -267,64 +367,3 @@ def prep_dataset(train_x_orig, train_y_orig, dev_x_orig, dev_y_orig, test_x_orig
     return train_x_norm,train_y_encoded, dev_x_norm,dev_y_encoded, test_x_norm, test_y_encoded
 
 #-----------------------------------------------------------------------------------------------------------------
-#retriving a small sample of the original dataset for model development and experimentation
-def sample_origDataset(x,y, dataVol = 25):
-    """
-        Returns a sample dataset from the fully processed dataset
-       
-        Arguments:
-            - **x** -- original input data
-            - **y** -- original output labels
-            - **dataVol** -- sample volume in percentage (default 10%)
-        Returns:
-            - **x_sample** -- input sample  from original dataset of size ( dataVol% of x)
-            - **y_sample** -- output sample  from original dataset of size (datavol% of y)
-            - **dataVol** -- sample volume in percentage
-    """
-    m = y.shape[0]
-    sample_m = int(np.multiply(m,np.divide(dataVol,100))) #int(m*(dataVol/100)) 
-    
-    #suffling the original dataset
-    randCol = np.random.permutation(m)
-    x_suffled = x[randCol,:,:]
-    y_suffled = y[randCol,:]
-    
-
-    x_sample = x_suffled[0:sample_m,:,:]
-    y_sample = y_suffled[0:sample_m,:]
-
-    assert(x_sample.shape == (sample_m,28,28))
-    assert(y_sample.shape == (sample_m,1))
-
-    return dataVol, x_sample, y_sample
-
-#-----------------------------------------------------------------------------------------------------------------
-#retriving a small sample of the prepared dataset for model development and experimentation
-def sample_prepDataset(x,y, dataVol = 25):
-    """
-    Returns a sample dataset from the fully processed dataset
-    
-    Arguments:
-        - **x** -- prepared input data
-        - **y** -- prepared output encoded labels
-        - dataVol -- sample volume in percentage (default 10%)
-    Returns:
-        - **x_sample** -- input sample  from processed dataset of size ( dataVol% of x)
-        - **y_sample** -- output sample from processed dataset of size (datavol% of y)
-        - **dataVol** -- sample volume in percentage
-    """
-    m = y.shape[1]
-    sample_m = int(np.multiply(m,np.divide(dataVol,100))) #int(m*(dataVol/100))
-
-    #suffling the dataset
-    randCol = np.random.permutation(m)
-    x_suffled = x[:,randCol]
-    y_suffled = y[:,randCol]
-
-    x_sample = x_suffled[:, 0:sample_m]
-    y_sample = y_suffled[:, 0:sample_m]
-
-    assert(x_sample.shape == (784,sample_m))
-    assert(y_sample.shape == (11,sample_m))
-
-    return dataVol, x_sample, y_sample
