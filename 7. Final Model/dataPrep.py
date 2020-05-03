@@ -8,6 +8,7 @@ Created on Thu Mar 26 15:04:49 2020
 # Python Standard Libraries for importing data from binary file
 import os.path #for accessing the file path
 import struct  #for unpacking the binary data
+import math    #for using floor in creating minibatches
 
 #core packages
 import numpy as np
@@ -365,5 +366,39 @@ def prep_dataset(train_x_orig, train_y_orig, dev_x_orig, dev_y_orig, test_x_orig
     test_y_encoded = one_hot_encoding(test_y_orig.T)
     
     return train_x_norm,train_y_encoded, dev_x_norm,dev_y_encoded, test_x_norm, test_y_encoded
+
+#-----------------------------------------------------------------------------------------------------------------
+#Creating minibatch
+def rand_mini_batches(X, Y, mini_batch_size = 64, seed=1):
+   
+    classes = Y.shape[0]
+    np.random.seed(seed)            
+    m = X.shape[1]                  # number of training examples
+    mini_batches = []
+        
+#     Shuffle (X, Y)
+    permutation = list(np.random.permutation(m))
+    shuffled_X = X[:, permutation]
+    shuffled_Y = Y[:, permutation].reshape((classes,m))
+
+#     Partition (shuffled_X, shuffled_Y) except for the last batch
+    num_complete_minibatches = math.floor(m/mini_batch_size) # number of mini batches of size mini_batch_size 
+    for k in range(0, num_complete_minibatches):
+        mini_batch_X = shuffled_X[:, k * mini_batch_size : (k+1)*mini_batch_size]
+        mini_batch_Y = shuffled_Y[:, k * mini_batch_size : (k+1)*mini_batch_size]
+        mini_batch = (mini_batch_X, mini_batch_Y)
+        mini_batches.append(mini_batch)
+    
+    # Last batch (last mini-batch < mini_batch_size)
+    if m % mini_batch_size != 0:
+        mini_batch_X = shuffled_X[:, num_complete_minibatches * mini_batch_size : m]
+        mini_batch_Y = shuffled_Y[:, num_complete_minibatches * mini_batch_size : m]
+        mini_batch = (mini_batch_X, mini_batch_Y)
+        mini_batches.append(mini_batch)
+    
+    return mini_batches
+
+
+
 
 #-----------------------------------------------------------------------------------------------------------------
