@@ -345,7 +345,7 @@ def predict(X,y,parameters):
 #====================================================================================================================
 # Final Model Training
 
-def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initialization = "random", optimizer = 'bgd',regularizer = None ):
+def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initialization = "random", optimizer = 'bgd',regularizer = None, visualize = True ):
     # loading the hyper parameters
     learning_rate = hyperParams['learning_rate']
     num_epoch = hyperParams['num_epoch']
@@ -433,10 +433,11 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
     
     train_tic = time.time() # for calculating entire training time
     hrs, mins, secs , ms = convert_time((train_tic - train_toc)*1000)
-    print("\nTotal Training Time = %dhr %dmins %dsecs %.2fms"%(hrs, mins, secs, ms))
+    print("\n\n*************************** Total Training Time = %dhr %dmins %dsecs %.2fms ***************************"%(hrs, mins, secs, ms))
     
     #visualizing the result of the training
-    visualize_training_results(train_accs, val_accs, train_losses, val_losses)    
+    if visualize == True:
+        visualize_training_results(train_accs, val_accs, train_losses, val_losses)    
     
     return parameters
 
