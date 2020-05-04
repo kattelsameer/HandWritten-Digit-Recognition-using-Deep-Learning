@@ -83,6 +83,7 @@ def visualize_training_results(train_accs, val_accs, train_loss, val_loss):
     axes[0].set_title("Training and Validation Loss " , fontsize = 16, pad = 10)
     axes[0].set_xlabel("No. of Epochs", fontsize = 12)
     axes[0].set_ylabel("Loss", fontsize = 12)
+    axes[0].set_ylim(top = 1, bottom = -0.5)    
     
     axes[1].plot(np.squeeze(train_accs), label = 'Training Accuracy', color = 'blue')
     axes[1].plot(np.squeeze(val_accs), label = 'Validation Accuracy', color = 'red')
@@ -90,7 +91,7 @@ def visualize_training_results(train_accs, val_accs, train_loss, val_loss):
     axes[1].set_title("Accuracy " , fontsize = 16, pad = 10)
     axes[1].set_xlabel("No. of Epochs", fontsize = 12)
     axes[1].set_ylabel("Accuracy", fontsize = 12)
-    axes[1].set_ylim(0.75,1)    
+    axes[1].set_ylim(bottom = 0.85)    
 
     plt.show()
 
@@ -214,31 +215,59 @@ def accuracy(cm):
     return acc
 
 #-------------------------------------------------------------------------------------------------------------------
-##displaying the model summary
-def summary(cm):
-    print("+===============+===============+===============+===============+")
-    print("| Label \t| Precision \t| Recall \t| F1 Score \t|")
-    print("+===============+===============+===============+===============+")
+## Calculating model metrices
+def model_metrics(cm):
     prec = []
     rec = []
     f1 = []
+    metrics = {}
+    macro_metrics = {}
     for label in range(10):
         prec.append(precision(label, cm))
         rec.append(recall(label, cm))
         f1.append(f1_score(prec[label], rec[label]))
-        print("| %d \t\t|  %.5f \t|  %.5f \t|  %.5f \t|"%(label, prec[label], rec[label], f1[label]))
-
-    print("+===============+===============+===============+===============+") 
     
     avg_precision = macro_precision_average(prec)
     avg_recall = macro_recall_average(rec)
     avg_f1 = macro_f1_score(f1)
     acc = accuracy(cm)
     
+    metrics = {"Precision":prec,
+               "Recall":rec,
+               "F1-Score":f1}
+    macro_metrics = {"Precision":avg_precision,
+                     "Recall":avg_recall,
+                     "F1-Score":avg_f1}
+    
+    return metrics, macro_metrics, acc
+
+#-------------------------------------------------------------------------------------------------------------------
+
+##displaying the model summary
+def metric_summary(metrics, macro_metrics, accuracy):
+    print("+===============+===============+===============+===============+")
+    print("| Label \t| Precision \t| Recall \t| F1 Score \t|")
+    print("+===============+===============+===============+===============+")
+    prec = metrics["Precision"]
+    rec = metrics["Recall"]
+    f1 = metrics["F1-Score"]
+    
+    for label in range(len(prec)):
+        print("| %d \t\t|  %.5f \t|  %.5f \t|  %.5f \t|"%(label, prec[label], rec[label], f1[label]))
+
+    print("+===============+===============+===============+===============+") 
+    
+    avg_precision = macro_metrics["Precision"]
+    avg_recall = macro_metrics["Recall"]
+    avg_f1 = macro_metrics["F1-Score"]
+    acc = accuracy
+    
     print("| Macro Avg \t|  %.5f \t|  %.5f \t|  %.5f \t|"%( avg_precision, avg_recall, avg_f1))
     print("+===============+===============+===============+===============+") 
     
-    print("\n Accuracy \t\t  %.5f"%( acc))
+    print("\n Accuracy \t\t  %.5f"%(acc))
+    
+    return 
 
 #====================================================================================================================
 #Visualizing Prediction
