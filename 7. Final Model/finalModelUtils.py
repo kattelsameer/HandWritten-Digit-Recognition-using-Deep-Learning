@@ -83,7 +83,8 @@ def visualize_training_results(train_accs, val_accs, train_loss, val_loss):
     axes[0].set_title("Training and Validation Loss " , fontsize = 16, pad = 10)
     axes[0].set_xlabel("No. of Epochs", fontsize = 12)
     axes[0].set_ylabel("Loss", fontsize = 12)
-    axes[0].set_ylim(top = 1, bottom = -0.5)    
+    axes[0].set_ylim(top = 1, bottom = -0.5)  
+    axes[0].grid(True)
     
     axes[1].plot(np.squeeze(train_accs), label = 'Training Accuracy', color = 'blue')
     axes[1].plot(np.squeeze(val_accs), label = 'Validation Accuracy', color = 'red')
@@ -91,7 +92,8 @@ def visualize_training_results(train_accs, val_accs, train_loss, val_loss):
     axes[1].set_title("Accuracy " , fontsize = 16, pad = 10)
     axes[1].set_xlabel("No. of Epochs", fontsize = 12)
     axes[1].set_ylabel("Accuracy", fontsize = 12)
-    axes[1].set_ylim(bottom = 0.85)    
+    axes[1].set_ylim(bottom = 0.85)  
+    axes[0].grid(True)
 
     plt.show()
 
