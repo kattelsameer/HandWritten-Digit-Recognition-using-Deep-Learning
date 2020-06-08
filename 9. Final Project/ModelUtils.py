@@ -17,7 +17,6 @@ import matplotlib.pyplot as plt
 # loading custom model
 from dataset import label_description
 
-
 # Doc String is based on Google Style Python Docstrings: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/index.html
 # Doc Rendering:sphinxcontrib.napoleon 
 #===================================================( Activation Functions )===================================================
