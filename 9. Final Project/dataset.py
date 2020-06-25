@@ -332,6 +332,7 @@ def load_dataset(dataset, size_in_per=100):
 
 
 # ===================================( Splitting Training Dataset into Training and Dev Set )===================================
+
 def train_dev_split(train_x,train_y):
     """Randomly splits the test set to dev and test set
         
@@ -347,6 +348,7 @@ def train_dev_split(train_x,train_y):
         
         Example:
             >>> train_x_split, train_y_split, dev_x_split, dev_y_split = train_dev_split(train_x, train_y)
+
     """
     m = train_y.shape[0]
     n = 50000 #Splitting the training set into train and dev set of size 50000 and 10000 respectively
