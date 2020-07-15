@@ -26,7 +26,8 @@
 
 ## **Setting up the development environment**
 
-> First of all [**download** and **install Anaconda package**](https://docs.anaconda.com/anaconda/install/)
+> First of all [**download** and **install Anaconda package**](https://docs.anaconda.com/anaconda/install/). <br>
+> Also **install Git**. Every thing about setting up git and using it can be found in this [**online book**](https://git-scm.com/book/en/v2).
 
 ### Clone the Repo
 > Go to your desired foldar location. Open the terminal and run the following command.
