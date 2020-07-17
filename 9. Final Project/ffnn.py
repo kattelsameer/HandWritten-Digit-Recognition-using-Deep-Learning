@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #custom module
-from  dataset import load_dataset, dev_test_split, prep_dataset
+from  dataset import load_dataset, train_dev_split, prep_dataset
 from dataset import visualize_data_distribution, visualize_dataset
 
 from ModelUtils import relu, relu_grad, softmax
