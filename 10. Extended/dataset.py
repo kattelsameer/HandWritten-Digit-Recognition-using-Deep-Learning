@@ -351,7 +351,11 @@ def train_dev_split(train_x,train_y):
 
     """
     m = train_y.shape[0]
-    n = int(0.85 * m) #Splitting the training set into train and dev set such that dev set is 15% of training set in size
+    if m >= 60000:
+        n = 50000 #for 100% data taking 50000 as training set and 10000 as dev set
+    else:
+        n = int(0.85 * m) #Splitting the training set into train and dev set such that dev set is 15% of training set in size
+    
     #suffling the test dataset
     randCol = np.random.permutation(m)
     suffled_x = train_x[randCol,:,:]
