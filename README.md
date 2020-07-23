@@ -34,24 +34,3 @@
     
     git clone https://github.com/kattelsameer/HandWritten-Digit-Recognition-using-Deep-Learning.git
     
-
-### Import the Environment from YAML file
-> Once the repo is cloned go inside the project folder where you will find the environment.yaml file.
-> Open the terminal and run the following command to clone the conda environment.
-    
-    conda env create -f environment.yaml
-    
-### Activate the environment
-> Then activate the environment by running the following command.
-    
-    conda activate digitRecognizer
-    
-### Deactivate the environment 
-> If you want to deactivate the environment, run the following command.
-    
-    conda deactivate
-
-### Switching back to the base environment
-> If you want to switch back to your base environment run the following command.
-    
-    conda activate
