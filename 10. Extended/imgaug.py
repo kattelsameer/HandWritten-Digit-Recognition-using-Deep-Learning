@@ -203,8 +203,9 @@ def horizontal_flip_images(images,labels, save_image = False):
     return np.asarray(flipped_images), labels
 
 # =====================================================( Augment Images )=====================================================
-def augment_img(images_orig, labels, horizontal_flip = False, crop_and_pad = False, rotate = False, shift = False, blur = False, save_images = False):
+def augment_img(images_orig, labels, horizontal_flip = False, crop_and_pad = False, rotate = False, shift = False, blur = False, save_images = False, include_original = False):
     
+    m = labels.shape[0]
     augmented_images = np.copy(images_orig)
     augmented_labels = np.copy(labels)
 
@@ -242,7 +243,11 @@ def augment_img(images_orig, labels, horizontal_flip = False, crop_and_pad = Fal
     #suffeling all the images
     augmented_images, augmented_labels = sample_dataset(augmented_images, augmented_labels, size_in_per = 100)
     
-    return augmented_images, augmented_labels
+    if include_original:
+        return augmented_images, augmented_labels
+    else:
+        return augmented_images[m::], augmented_labels[m:]
+    
     
 # =====================================================( Load Files from Directory )=====================================================
 
