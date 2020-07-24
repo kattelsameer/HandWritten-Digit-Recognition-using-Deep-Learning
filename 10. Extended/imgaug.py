@@ -35,9 +35,9 @@ def rotate_images(images,labels, save_image = False):
     rotated_images = []
     
     for i in range(m):    
-        # randomly selecting angle between the range -45 to -15 and 15 to 45
-        pos_angle = np.random.randint(low = 10, high = 45)
-        neg_angle = np.random.randint(low = -45, high = -10)
+        # randomly selecting angle between the range -60 to +60
+        pos_angle = np.random.randint(low = 0, high = 60)
+        neg_angle = np.random.randint(low = -60, high = 0)
         angle = np.random.choice([pos_angle,neg_angle])
 
         rotated_img = ndimage.rotate(images[i], angle, reshape=False, mode = "nearest")
@@ -69,11 +69,11 @@ def blur_images(images, labels, filter_mode = "random", random_filter = False, s
             filter_mode = np.random.choice(filters)
             
         if filter_mode == "gaussian":
-            sig = np.random.uniform(low = 0, high = 2)
+            sig = np.random.uniform(low = 0, high = 2.5)
             blurred_img = ndimage.gaussian_filter(images[i], sigma=sig,  mode = "nearest")
 
         elif filter_mode =="maximum":
-            s = np.random.uniform(low = 2, high = 4)
+            s = np.random.uniform(low = 0, high = 4)
             blurred_img = ndimage.maximum_filter(images[i], size= s,  mode = "nearest")
 
         elif filter_mode == "minimum":
@@ -81,11 +81,11 @@ def blur_images(images, labels, filter_mode = "random", random_filter = False, s
             blurred_img = ndimage.minimum_filter(images[i], size= s,  mode = "nearest")
 
         elif filter_mode == "median":
-            s = np.random.randint(low = 2, high = 6)
+            s = np.random.randint(low = 1, high = 6)
             blurred_img = ndimage.median_filter(images[i], size= s,  mode = "nearest")
 
         elif filter_mode == "uniform":
-            s = np.random.uniform(low = 2, high = 6)
+            s = np.random.uniform(low = 1, high = 6)
             blurred_img = ndimage.uniform_filter(images[i], size= s, mode = "nearest")
 
         else:
@@ -110,22 +110,24 @@ def shift_images(images,labels, shifting ="both", save_image = False):
             os.makedirs(path)  # creating required directories recursively
 
     shifted_images = []
+    low = -7
+    high = 7
     
     for i in range(m):    
          # randomly selecting angle between the range -45 to -15 and 15 to 45
         
         if shifting == "horizontal":
             xs = 0
-            ys = np.random.uniform(low = -6, high = 6)
+            ys = np.random.uniform(low, high)
             
             
         elif shifting == "vertical":
             ys = 0
-            xs = np.random.uniform(low = -6, high = 6)
+            xs = np.random.uniform(low, high)
             
         elif shifting == "both":
-            xs = np.random.uniform(low = -6, high = 6)
-            ys = np.random.uniform(low = -6, high = 6)
+            xs = np.random.uniform(low, high)
+            ys = np.random.uniform(low, high)
         else:
             raise ValueError("Shifting should only be 'horizontal', 'vertical', or 'both'")
             
@@ -152,6 +154,8 @@ def crop_and_pad_images(images, labels, crop_center = False, save_image = False)
             os.makedirs(path)  # creating required directories recursively
 
     cropped_images = []
+    low = 4
+    high = 20
     
     for i in range(m):    
         lx, ly = images[i].shape
@@ -163,10 +167,10 @@ def crop_and_pad_images(images, labels, crop_center = False, save_image = False)
             cropped_image[lx // c: - lx // c, ly // c: - ly // c] = np.copy(images[i][lx // c: - lx // c, ly // c: - ly // c])
         else: 
             # randomly selecting  the range for cropping across different axis
-            clx = np.random.randint(low = 4, high = 10)
-            crx= np.random.randint(low = 4, high = 10)
-            cly = np.random.randint(low = 4, high = 10)
-            cry = np.random.randint(low = 4, high = 10)
+            clx = np.random.randint(low, high )
+            crx= np.random.randint(low, high )
+            cly = np.random.randint(low, high )
+            cry = np.random.randint(low, high )
             
             cropped_image[lx // clx: - lx // crx, ly // cly: - ly // cry] = np.copy(images[i][lx // clx: - lx // crx, ly // cly: - ly // cry])
 
