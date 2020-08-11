@@ -23,8 +23,8 @@ from ModelUtils import save_model, load_model
 
 #====================================================================================================================
 # initializing the layers
-def init_layers(X,Y,hidden_layers):
-    """Initializes the layers of networks with the numberof nodes in each layers.
+def init_layers(input_shape, output_shape, hidden_layers):
+    """Initializes the layers of networks with the number of nodes in each layers.
         
         Arguments:
             mnjnj.
@@ -33,16 +33,14 @@ def init_layers(X,Y,hidden_layers):
             knlknl.
             
         Example:
-            Here, shape of x = (784,m)
-                  shape of y = (10,m)
-            >>> layers_dim = init_layers(x, y, hidden_layers = [32,16])
+            >>> layers_dim = init_layers(784, 10, hidden_layers = [32,16])
             >>> print(layers_dim)
             
             Outputs:
                 [784, 32, 16, 10]
     """
-    input_nodes = X.shape[0]
-    output_nodes = Y.shape[0]
+    input_nodes = input_shape
+    output_nodes = output_shape
     
     layers_dim = [input_nodes]
     

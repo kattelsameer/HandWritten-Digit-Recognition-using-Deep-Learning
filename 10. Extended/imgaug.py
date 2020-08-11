@@ -9,6 +9,7 @@ Created on Mon Jul 20 22:13:40 2020
 # standard python modules
 import os # for working with directories
 import os.path # for working with paths
+import time
 
 #core python modules
 from PIL import Image # for loading and saving images
@@ -17,8 +18,11 @@ from scipy import ndimage # for core image processing namely, rotate, blur and s
 import numpy as np # for all other maths operations 
 
 #custom project modules
+from dataset import prep_dataset
 from dataset import get_files 
 from dataset import sample_dataset
+from ModelUtils import convert_time
+
 
 
 # =====================================================( Rotate Images )=====================================================
@@ -252,9 +256,103 @@ def augment_img(images_orig, labels, horizontal_flip = False, crop_and_pad = Fal
     else:
         return augmented_images[m::], augmented_labels[m:]
     
-    
-# =====================================================( Load Files from Directory )=====================================================
 
+# =====================================================( Generate Minibatches )==============================================================
+def generate_minibatches(X, Y, minibatch_size=64, seed=1):
+    np.random.seed(seed)  # varying the seed value so that the minibatchs become random in each epoch
+    m = Y.shape[0]  # number of training examples
+    minibatches = []
+
+    # Shuffle (X, Y)
+    permutation = list(np.random.permutation(m))
+    shuffled_X = X[permutation, :, :]
+    shuffled_Y = Y[permutation, :]
+
+    # Partition (shuffled_X, shuffled_Y) except for the last batch
+    num_complete_minibatches = np.floor(m / minibatch_size).astype(int)  # number of mini batches of size minibatch_size
+    for k in range(0, num_complete_minibatches):
+        minibatch_X = shuffled_X[k * minibatch_size: (k + 1) * minibatch_size, :, :]
+        minibatch_Y = shuffled_Y[k * minibatch_size: (k + 1) * minibatch_size, :]
+        minibatch = (minibatch_X, minibatch_Y)
+        minibatches.append(minibatch)
+
+    # Last batch (last minibatch <= minibatch_size)
+    if m % minibatch_size != 0:
+        minibatch_X = shuffled_X[num_complete_minibatches * minibatch_size: m, :, :]
+        minibatch_Y = shuffled_Y[num_complete_minibatches * minibatch_size: m, :]
+        minibatch = (minibatch_X, minibatch_Y)
+        minibatches.append(minibatch)
+
+    return minibatches  
+ 
+# =====================================================( Data Generator )==============================================================   
+def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, pre_process_data = False):
+    #initializing the variables
+    seed = 1
+    
+    aug_images = np.copy(X_orig[0:1,:,:])
+    aug_labels = np.copy(Y_orig[0:1,:])
+   
+    aug_toc = time.time() # for calculating entire augmentation time
+    print("Generating the Augmented Dataset...")
+    
+    for i in range(1, aug_count+1):
+        seed += 1
+        time_augmented = 0
+        batch_times = []
+      
+        if verbose > 0:
+            print("\nAugmentation Count %d/%d"%(i,aug_count))
+        
+        minibatches = generate_minibatches(X_orig, Y_orig, batch_size, seed)
+        total_minibatches = len(minibatches)
+        
+        for ind, minibatch in enumerate(minibatches):
+            batch_toc = time.time() # for calculating time of an epoch cycle
+            
+            #retriving minibatch of X and Y from training set
+            (minibatch_X, minibatch_Y) = minibatch
+            
+            aug_images_batch, aug_labels_batch = augment_img(minibatch_X, minibatch_Y,
+                                                             crop_and_pad = True,
+                                                             rotate = True,
+                                                             shift = True,
+                                                             blur = True,
+                                                             save_images = False,
+                                                             include_original = False)
+            
+            aug_images = np.concatenate((aug_images, aug_images_batch), axis = 0)
+            aug_labels = np.concatenate((aug_labels, aug_labels_batch), axis = 0)
+            
+            if verbose > 1:
+            # Calculating Augmentation time for each batch 
+                batch_tic = time.time()
+                batch_times.append(batch_tic - batch_toc)
+                time_augmented = np.sum(batch_times)
+            
+                #calculating Augmentation progress
+                per = ((ind+1) / total_minibatches) * 100
+                inc = int(per // 10) * 2
+                           
+                print ("%d/%d [%s>%s %.0f%%] - %.2fs"%(ind+1, total_minibatches, '=' * inc,'.'*(20-inc), per, time_augmented),end='\r')
+            
+        #----------------------------------------------batch ends-------------------------------------------
+       
+        if verbose > 1:
+            time_per_batch = int(np.mean(batch_times)*1000)
+            print ("%d/%d [%s 100%%] - %.2fs %dms/step"%(total_minibatches, total_minibatches, '=' * 20, time_augmented, time_per_batch ),end='\r')
+                
+    #-------------------------------------------Total Augmentation ends-----------------------------------------------
+    if verbose > 1:
+        aug_tic = time.time() # for calculating entire Augmentation time
+        hrs, mins, secs , ms = convert_time((aug_tic - aug_toc)*1000)
+        print("\n\nTotal Augmentation Time = %dhr %dmins %dsecs %.2fms"%(hrs, mins, secs, ms))
+
+    if pre_process_data:
+        return prep_dataset(aug_images[1:], aug_labels[1:], num_class = 10)
+    else:    
+        return aug_images[1:], aug_labels[1:]
+# =====================================================( Load Files from Directory )=====================================================
 
 def load_images_from_file(path):
     #checking for the validity of the path
@@ -276,8 +374,3 @@ def load_images_from_file(path):
     labels = np.asarray(lbls)
     
     return real_images, labels
-
-
-
-# =====================================================( Download Dataset )=====================================================
-
