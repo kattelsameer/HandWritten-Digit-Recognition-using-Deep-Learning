@@ -351,8 +351,10 @@ def train_dev_split(train_x,train_y):
 
     """
     m = train_y.shape[0]
-    if m >= 60000:
+    if m == 60000:
         n = 50000 #for 100% data taking 50000 as training set and 10000 as dev set
+    elif m == 30000:
+        n = 25000 #for 50% data taking 25000 as training set and 5000 as dev set
     else:
         n = int(0.85 * m) #Splitting the training set into train and dev set such that dev set is 15% of training set in size
     
