@@ -278,7 +278,7 @@ def forward_prop(X, parameters, keep_probs = [], regularizer = None):
     
 #====================================================================================================================
 # compute Cross entropy cost
-def softmax_cross_entropy_cost(AL, Y, caches, lambd = 0, regularizer = None):
+def softmax_cross_entropy_cost(AL, Y, caches, lambd = 0, regularizer = None, from_logits = False ):
     """
     
     
@@ -300,7 +300,19 @@ def softmax_cross_entropy_cost(AL, Y, caches, lambd = 0, regularizer = None):
     L = len(caches)
     m = Y.shape[1]
     
-    cost = -(1./m) * np.sum(np.sum(np.multiply(Y,np.log(AL + 1e-8)), axis = 0,keepdims=True))# add very small number 1e-8 to avoid log(0)
+     #cost computation from logit
+    #ref link : https://www.d2l.ai/chapter_linear-networks/softmax-regression-concise.html
+    if from_logits == True:
+        z = caches[-1][-1] #retriving the logit(activation cache) of the last layer from the caches
+        
+        z = z - np.max(z,axis = 0) #calculating negative z for avoiding numerical overflow in exp computation
+        logit_log =  z - np.log(np.sum(np.exp(z),axis = 0)) #calculating the log of the softmax to feed into cost
+        cost = -(1./m) * np.sum(np.sum(np.multiply(Y,logit_log), axis = 0,keepdims=True))
+        
+    else:
+        cost = -(1./m) * np.sum(np.sum(np.multiply(Y,np.log(AL + 1e-8)), axis = 0,keepdims=True))# add very small number 1e-8 to avoid log(0)
+
+    
 
     if regularizer == "l2":
         norm = 0
@@ -744,8 +756,9 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
             AL, caches, dropout_masks = forward_prop(minibatch_X, parameters, keep_probs = keep_probs, regularizer = regularizer)
             
             #Computing cross entropy cost
-            cross_entropy_cost = softmax_cross_entropy_cost(AL, minibatch_Y, caches, lambd = lambd, regularizer = regularizer) #accumulating the batch costs
-#             batch_cost.append(cross_entropy_cost)   
+            cross_entropy_cost = softmax_cross_entropy_cost(AL, minibatch_Y, caches, lambd = lambd, regularizer = regularizer, from_logits = True) 
+            #accumulating the batch costs
+            #batch_cost.append(cross_entropy_cost)   
             
             #Backward Propagation
             grads = backward_prop(AL, minibatch_Y, caches, dropout_masks = dropout_masks, keep_probs = keep_probs, lambd = lambd, regularizer = regularizer)
@@ -818,6 +831,7 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
                "val_loss":val_losses
             }
     return history
+
 
 #====================================================================================================================
 #making Prediction
