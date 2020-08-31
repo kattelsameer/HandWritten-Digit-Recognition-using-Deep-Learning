@@ -102,7 +102,7 @@ def init_parameters(layers_dim, initialization = "random"):
 
 #====================================================================================================================
 # initializing hyper parameters
-def init_hyperParams(alpha, num_epoch, minibatch_size = 64, lambd = 0, keep_probs = []):
+def init_hyperParams(alpha, num_epoch, minibatch_size = 64, lambd = 0, keep_probs = [],beta1 = 0.9, beta2 = 0.999, epsilon = 1e-8):
     """
         
         Arguments:
@@ -119,9 +119,9 @@ def init_hyperParams(alpha, num_epoch, minibatch_size = 64, lambd = 0, keep_prob
                    'mini_batch_size':minibatch_size,
                    'lambda':lambd,
                    'keep_probs':keep_probs,
-                   'beta1':0.9,
-                   'beta2':0.999,
-                   'epsilon':1e-8
+                   'beta1':beta1,
+                   'beta2':beta2,
+                   'epsilon':epsilon
                   }
     
     return hyperParams
