@@ -673,7 +673,7 @@ def evaluate(X, Y, parameters):
     # predicting output using fordward propogation 
     probas, caches, _ = forward_prop(X, parameters)
     #computing loss
-    loss = softmax_cross_entropy_cost(probas, Y, caches) 
+    loss = softmax_cross_entropy_cost(probas, Y, caches, from_logits = True) 
     
     #deriving the predictrueted labels
     true_labels = np.argmax(Y,axis=0).reshape(1,m)
