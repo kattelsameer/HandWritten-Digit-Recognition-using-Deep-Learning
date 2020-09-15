@@ -146,7 +146,7 @@ def shift_images(images,labels, shifting ="both", save_image = False):
     
     return np.asarray(shifted_images), labels
 
-# =====================================================( Crop and Pad Images )=====================================================
+# ===================================================( Crop and Pad Images )===================================================
 #cropping image
 def crop_and_pad_images(images, labels, crop_center = False, save_image = False):
    
@@ -186,7 +186,7 @@ def crop_and_pad_images(images, labels, crop_center = False, save_image = False)
     
     return np.asarray(cropped_images), labels
 
-# =====================================================( Flip Images Horizontally )=====================================================
+# =================================================( Flip Images Horizontally )=================================================
 #Flipping image
 def horizontal_flip_images(images,labels, save_image = False):
     m = labels.shape[0]
@@ -257,7 +257,7 @@ def augment_img(images_orig, labels, horizontal_flip = False, crop_and_pad = Fal
         return augmented_images[m::], augmented_labels[m:]
     
 
-# =====================================================( Generate Minibatches )==============================================================
+# ===================================================( Generate Minibatches )===================================================
 def generate_minibatches(X, Y, minibatch_size=64, seed=1):
     np.random.seed(seed)  # varying the seed value so that the minibatchs become random in each epoch
     m = Y.shape[0]  # number of training examples
@@ -285,16 +285,26 @@ def generate_minibatches(X, Y, minibatch_size=64, seed=1):
 
     return minibatches  
  
-# =====================================================( Data Generator )==============================================================   
+# ==================================================( Data Generator )========================================================= 
+def get_readable_datasize(orig_size):
+    if orig_size >= 1e6:
+        readable_size = str(int(orig_size // 1e6))+"M"
+    elif orig_size >=1e3:
+        readable_size = str(int(orig_size // 1e3))+"K"
+    else:
+        readable_size = str(orig_size)
+    
+    return readable_size
+
 def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, pre_process_data = False):
     #initializing the variables
     seed = 1
-    
     aug_images = np.copy(X_orig[0:1,:,:])
     aug_labels = np.copy(Y_orig[0:1,:])
    
     aug_toc = time.time() # for calculating entire augmentation time
-    print("Generating the Augmented Dataset...")
+    
+    print("Generating %s Augmented images..."%(get_readable_datasize(X_orig.shape[0] * aug_count * 4)))
     
     for i in range(1, aug_count+1):
         seed += 1
@@ -352,7 +362,7 @@ def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, 
         return prep_dataset(aug_images[1:], aug_labels[1:], num_class = 10)
     else:    
         return aug_images[1:], aug_labels[1:]
-# =====================================================( Load Files from Directory )=====================================================
+# ===============================================( Load Files from Directory )==================================================
 
 def load_images_from_file(path):
     #checking for the validity of the path
