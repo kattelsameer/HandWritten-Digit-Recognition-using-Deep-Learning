@@ -159,7 +159,7 @@ def crop_and_pad_images(images, labels, crop_center = False, save_image = False)
 
     cropped_images = []
     low = 4
-    high = 20
+    high = 10
     
     for i in range(m):    
         lx, ly = images[i].shape
