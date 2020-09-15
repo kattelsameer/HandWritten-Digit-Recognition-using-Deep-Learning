@@ -690,8 +690,7 @@ def evaluate(X, Y, parameters):
     return accuracy, loss
 #====================================================================================================================
 # Final Model Training
-
-def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initialization = "random", optimizer = 'bgd',regularizer = None, verbose = 3):
+def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initialization = "random", optimizer = 'bgd',regularizer = None, verbose = 3, patience = None):
     # loading the hyper parameters
     learning_rate = hyperParams['learning_rate']
     num_epoch = hyperParams['num_epoch']
@@ -701,16 +700,24 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
     lambd = hyperParams['lambda']
     keep_probs = hyperParams['keep_probs']
 
+    #setting up necessary variables for early stopping
+    if patience != None:
+        path = "temp/" # pats to save the intermediate best parameters
+        if not os.path.exists(path):
+            os.makedirs(path)
+        filename = "best_param_intermediate"
+
+        early_stop_count = 0 #for early stopping
+        max_val_acc = 0 # for keeping track of maximum validation accuracy
+    
     #initializing the variables
     seed = 1
     m = Y_train.shape[1]
-#     costs = []      # keep track of epoch cost    
     train_accs = []  # keep track of training accuracy
     val_accs = []     # keep track of Validation accuracy
     train_losses = []  # keep track of training loss
     val_losses = []     # keep track of Validation loss
     
-   
     #selecting the minibatch size for each optimizer
     if optimizer == 'sgd':
         mini_batch_size = 1
@@ -735,7 +742,6 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
     for i in range(1, num_epoch+1):
         seed += 1
         time_trained = 0
-#         batch_cost = []
         batch_times = []
         accs = []
         losses = []
@@ -756,9 +762,7 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
             AL, caches, dropout_masks = forward_prop(minibatch_X, parameters, keep_probs = keep_probs, regularizer = regularizer)
             
             #Computing cross entropy cost
-            cross_entropy_cost = softmax_cross_entropy_cost(AL, minibatch_Y, caches, lambd = lambd, regularizer = regularizer, from_logits = True) 
-            #accumulating the batch costs
-            #batch_cost.append(cross_entropy_cost)   
+            cross_entropy_cost = softmax_cross_entropy_cost(AL, minibatch_Y, caches, lambd = lambd, regularizer = regularizer, from_logits = True) #accumulating the batch costs
             
             #Backward Propagation
             grads = backward_prop(AL, minibatch_Y, caches, dropout_masks = dropout_masks, keep_probs = keep_probs, lambd = lambd, regularizer = regularizer)
@@ -806,9 +810,6 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
         val_accs.append(val_acc)
         val_losses.append(val_loss)
         
-        #calculating Epoch Cost
-#         costs.append(np.mean(batch_cost))
-
         time_per_batch = int(np.mean(batch_times)*1000)
 
         if verbose == 2:
@@ -817,13 +818,36 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
             print ("%d/%d [%s 100%%] - %.2fs %dms/step | loss: %.4f | acc: %.4f | val_loss: %.4f | val_acc: %.4f"%(total_minibatches, total_minibatches, '=' * 20, time_trained, time_per_batch, train_loss, train_acc, val_loss, val_acc),end='\r')
                 
         
+        if patience != None:
+            #getting the best val accuracy
+            if val_acc >= max_val_acc:
+                max_val_acc = val_acc
+                print("\nBetter validation accuracy found. So saving the corresponding parameters...")
+                save_model(path+filename, parameters)
+
+            # Early Stopping
+            if patience >= 5:
+                epoch_trained = i+1
+
+                if val_acc < max_val_acc:
+                    early_stop_count += 1
+                else:
+                    early_stop_count = 0
+
+                if early_stop_count == patience:
+                    print("\n\nSince the Val Acc didn't increase for last %d epochs, Training is halted returning the best parameters obtained."%patience)
+                    break;
+
     #-------------------------------------------Gradient Descent ends-----------------------------------------------
     
     train_tic = time.time() # for calculating entire training time
     hrs, mins, secs , ms = convert_time((train_tic - train_toc)*1000)
     print("\n\nTotal Training Time = %dhr %dmins %dsecs %.2fms"%(hrs, mins, secs, ms))
-
-     
+    
+    #loading the best parameters
+    if patience != None:
+        parameters = load_model(path+filename)
+        os.remove(path + filename) #removing temporary file
     history = {"parameters":parameters,
                "accuracy": train_accs,
                "loss":train_losses ,
@@ -831,7 +855,6 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
                "val_loss":val_losses
             }
     return history
-
 
 #====================================================================================================================
 #making Prediction
