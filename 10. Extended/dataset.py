@@ -379,31 +379,37 @@ def train_dev_split(train_x,train_y):
 
 
 # ===========================================( Visualizing the Dataset Distribution )===========================================
+#dataset visualization using charts
 def visualize_data_distribution(y_orig, dataset_type):
-    """Plots bar graph showing the distribution of examples in each class.
+    """Plots bar graph showing the distribution of examples in each class
 
         Arguments:
-            y_orig (numpy.ndarray): labels of dev set.
-            dataset_type(str): type of dataset, can be training, dev or test.
+            y_orig (numpy.ndarray): labels of dev set
+            dataset_type(str): type of dataset, can be training, dev or test
             
         Example:
             >>> visualize_data_distribution(train_y, dataset_type = "training")            
     """
-    fig, axes = plt.subplots(figsize=(10, 5))
-    i = 0
-
-    # plotting the bar graph for each dataset labels
-    unique, counts = np.unique(y_orig, return_counts=True)
-    axes.bar(unique, counts)
+    #plotting the bar graph for each dataset labels
+    unique, counts = np.unique(y_orig, return_counts=True) 
     max_value = np.max(counts)
-    axes.set(xticks=unique, ylim=(0, max_value + max_value // 10))
-    axes.set_title("Distribution of Examples in %s Set" % dataset_type.capitalize(), fontsize=16)
-    axes.set_xlabel("Classes", fontsize=12)
-    axes.set_ylabel("Number of Examples", fontsize=12)
-    i += 1
+    fig, axes = plt.subplots(figsize=(10, 5))
+    rects = axes.bar(unique, counts)
+    
+    axes.set(xticks = unique, ylim = (0,max_value + max_value // 10))
+    axes.set_title("Distribution of Examples in %s Set"%dataset_type.capitalize() , fontsize = 16)
+    axes.set_xlabel("Classes", fontsize = 12)
+    axes.set_ylabel("Number of Examples", fontsize = 12)
+
+    for rect in rects:
+        height = rect.get_height()
+        axes.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 2),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
+        
     plt.show()
-
-
 # ==============================================( Defining the Label Description )==============================================
 def label_description(dataset):
     """Returns the description of the labels.
