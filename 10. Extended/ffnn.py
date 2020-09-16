@@ -689,8 +689,15 @@ def evaluate(X, Y, parameters):
     
     return accuracy, loss
 #====================================================================================================================
+# learning rate scheduling
+def learning_rate_scledule(alpha_prev, epoch, decay_rate = 1 ):
+    alpha = (1/(1 + decay_rate * epoch)) * alpha_prev
+    
+    return alpha
+#====================================================================================================================
 # Final Model Training
-def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initialization = "random", optimizer = 'bgd',regularizer = None, verbose = 3, patience = None):
+
+def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initialization = "random", optimizer = 'bgd',regularizer = None, verbose = 3, patience = None, step_decay = None):
     # loading the hyper parameters
     learning_rate = hyperParams['learning_rate']
     num_epoch = hyperParams['num_epoch']
@@ -701,7 +708,7 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
     keep_probs = hyperParams['keep_probs']
 
     #setting up necessary variables for early stopping
-    if patience != None:
+    if patience != None and patience !=0:
         path = "temp/" # pats to save the intermediate best parameters
         if not os.path.exists(path):
             os.makedirs(path)
@@ -739,15 +746,22 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
     print("Training The Model...")
     
     #Gradient Descent begins
-    for i in range(1, num_epoch+1):
+    for i in range(num_epoch):
         seed += 1
         time_trained = 0
         batch_times = []
         accs = []
         losses = []
         
+        if step_decay!= None and step_decay!= 0:
+            if i%step_decay == 0:
+                decay_rate = learning_rate / ((i+1)/num_epoch)
+                learning_rate = learning_rate_scledule(learning_rate, i, decay_rate)
+                if learning_rate <= 0.000338: learning_rate = 0.000338 
+        
+        
         if verbose > 0:
-            print("\nEpoch %d/%d"%(i,num_epoch))
+            print("\nEpoch %d/%d: learning rate - %.6f"%(i+1,num_epoch,learning_rate))
         
         minibatches = rand_mini_batches(X_train, Y_train, mini_batch_size, seed)
         total_minibatches = len(minibatches)
@@ -818,7 +832,7 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
             print ("%d/%d [%s 100%%] - %.2fs %dms/step | loss: %.4f | acc: %.4f | val_loss: %.4f | val_acc: %.4f"%(total_minibatches, total_minibatches, '=' * 20, time_trained, time_per_batch, train_loss, train_acc, val_loss, val_acc),end='\r')
                 
         
-        if patience != None:
+        if patience != None and patience !=0:
             #getting the best val accuracy
             if val_acc >= max_val_acc:
                 max_val_acc = val_acc
@@ -827,8 +841,6 @@ def train(X_train, Y_train, X_dev, Y_dev, layers_dim, hyperParams, initializatio
 
             # Early Stopping
             if patience >= 5:
-                epoch_trained = i+1
-
                 if val_acc < max_val_acc:
                     early_stop_count += 1
                 else:
