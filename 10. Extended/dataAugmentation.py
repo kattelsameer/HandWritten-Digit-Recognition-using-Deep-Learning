@@ -10,20 +10,18 @@ Created on Mon Jul 20 22:13:40 2020
 import os # for working with directories
 import os.path # for working with paths
 import time
+import gc
 
 #core python modules
 from PIL import Image # for loading and saving images
 from scipy import ndimage # for core image processing namely, rotate, blur and shift
-
 import numpy as np # for all other maths operations 
+import pickle
 
 #custom project modules
-from dataset import prep_dataset
 from dataset import get_files 
-from dataset import sample_dataset
+from dataset import sample_dataset, prep_dataset
 from ModelUtils import convert_time
-
-
 
 # =====================================================( Rotate Images )=====================================================
 #rotating and rotating+zooming
@@ -282,34 +280,74 @@ def generate_minibatches(X, Y, minibatch_size=64, seed=1):
         minibatch_Y = shuffled_Y[num_complete_minibatches * minibatch_size: m, :]
         minibatch = (minibatch_X, minibatch_Y)
         minibatches.append(minibatch)
+    
+    del shuffled_X, shuffled_Y
 
     return minibatches  
  
 # ==================================================( Data Generator )========================================================= 
 def get_readable_datasize(orig_size):
+    size = 0
     if orig_size >= 1e6:
-        readable_size = str(int(orig_size // 1e6))+"M"
+        size = int(orig_size//1e6) if orig_size % 1e6 == 0 else orig_size/1e6
+        readable_size = str(size)+"M"
     elif orig_size >=1e3:
-        readable_size = str(int(orig_size // 1e3))+"K"
+        size = int(orig_size//1e3) if orig_size % 1e3 == 0 else orig_size/1e3
+        readable_size = str(size)+"K"
     else:
         readable_size = str(orig_size)
     
     return readable_size
+# =========================================================================================================== 
 
+def save_generated_data(path, batch_no, data):
+    if not os.path.exists(path):
+        os.makedirs(path)  # creating required directories recursively
+
+    filename = "batch_" + str(batch_no)
+    with open(path + filename, 'wb') as output_file:
+        pickle.dump(data, output_file)
+# =========================================================================================================== 
+def load_augmented_data():
+    path = "dataset/augmented_data/"
+    
+    if not os.path.exists(path):
+            raise ValueError("Given folder doesnot exist")
+
+    file_names = get_files(path)
+    for ind,file in enumerate(file_names):
+        fname = path + file
+        try:
+            with open(fname, 'rb') as input_file:
+                image_batch, label_batch = pickle.load(input_file)
+                os.remove(fname)
+        except(OSError, IOError) as e:
+            print(e)
+
+        if ind == 0:
+            aug_images = image_batch
+            aug_labels = label_batch
+        else:
+            aug_images = np.concatenate((aug_images, image_batch), axis = 1)
+            aug_labels = np.concatenate((aug_labels, label_batch), axis = 1)
+        
+        del image_batch, label_batch
+    return aug_images, aug_labels
+# =========================================================================================================== 
 def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, pre_process_data = False):
     #initializing the variables
     seed = 1
-    aug_images = np.copy(X_orig[0:1,:,:])
-    aug_labels = np.copy(Y_orig[0:1,:])
-   
-    aug_toc = time.time() # for calculating entire augmentation time
-    
+    path = "dataset/augmented_data/"
+    aug_tic = time.time() # for calculating entire augmentation time
+
     print("Generating %s Augmented images..."%(get_readable_datasize(X_orig.shape[0] * aug_count * 4)))
     
     for i in range(1, aug_count+1):
         seed += 1
         time_augmented = 0
         batch_times = []
+        aug_images = np.copy(X_orig[0:1,:,:])
+        aug_labels = np.copy(Y_orig[0:1,:])
       
         if verbose > 0:
             print("\nAugmentation Count %d/%d"%(i,aug_count))
@@ -327,12 +365,11 @@ def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, 
                                                              crop_and_pad = True,
                                                              rotate = True,
                                                              shift = True,
-                                                             blur = True,
-                                                             save_images = False,
-                                                             include_original = False)
+                                                             blur = True)
             
             aug_images = np.concatenate((aug_images, aug_images_batch), axis = 0)
             aug_labels = np.concatenate((aug_labels, aug_labels_batch), axis = 0)
+            
             
             if verbose > 1:
             # Calculating Augmentation time for each batch 
@@ -347,21 +384,27 @@ def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, 
                 print ("%d/%d [%s>%s %.0f%%] - %.2fs"%(ind+1, total_minibatches, '=' * inc,'.'*(20-inc), per, time_augmented),end='\r')
             
         #----------------------------------------------batch ends-------------------------------------------
-       
+        if pre_process_data:
+            aug_data = prep_dataset(aug_images[1:], aug_labels[1:], num_class = 10)
+        else:    
+            aug_data = (aug_images[1:], aug_labels[1:])
+        
+        #saving the data to file
+        save_generated_data(path, batch_no = i, data = aug_data)
+        del aug_data,aug_images,aug_labels
+        
         if verbose > 1:
             time_per_batch = int(np.mean(batch_times)*1000)
             print ("%d/%d [%s 100%%] - %.2fs %dms/step"%(total_minibatches, total_minibatches, '=' * 20, time_augmented, time_per_batch ),end='\r')
                 
     #-------------------------------------------Total Augmentation ends-----------------------------------------------
+    gc.collect()
+    
     if verbose > 1:
-        aug_tic = time.time() # for calculating entire Augmentation time
-        hrs, mins, secs , ms = convert_time((aug_tic - aug_toc)*1000)
+        #calculating entire Augmentation time
+        hrs, mins, secs , ms = convert_time((time.time() - aug_tic)*1000)
         print("\n\nTotal Augmentation Time = %dhr %dmins %dsecs %.2fms"%(hrs, mins, secs, ms))
 
-    if pre_process_data:
-        return prep_dataset(aug_images[1:], aug_labels[1:], num_class = 10)
-    else:    
-        return aug_images[1:], aug_labels[1:]
 # ===============================================( Load Files from Directory )==================================================
 
 def load_images_from_file(path):

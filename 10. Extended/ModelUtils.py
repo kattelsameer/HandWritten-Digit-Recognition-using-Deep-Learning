@@ -8,22 +8,11 @@ Created on Mon Jun  8 10:26:57 2020
 # ===================================================( Loading Dependencies )===================================================
 # Python Standard Libraries
 import pickle  # for saving model
-import math  # for using floor in creating minibatches
 
 # core packages
 import numpy as np
 import matplotlib.pyplot as plt
 
-# loading custom model
-from dataset import label_description
-# ===================================================( Loading Dependencies )===================================================
-# Python Standard Libraries
-import pickle  # for saving model
-
-import math  # for using floor in creating minibatches
-import matplotlib.pyplot as plt
-# core packages
-import numpy as np
 # loading custom model
 from dataset import label_description
 
@@ -161,7 +150,7 @@ def rand_mini_batches(X, Y, minibatch_size=64, seed=1):
     shuffled_Y = Y[:, permutation].reshape((classes, m))
 
     # Partition (shuffled_X, shuffled_Y) except for the last batch
-    num_complete_minibatches = math.floor(m / minibatch_size)  # number of mini batches of size minibatch_size
+    num_complete_minibatches = m // minibatch_size  # number of mini batches of size minibatch_size
     for k in range(0, num_complete_minibatches):
         minibatch_X = shuffled_X[:, k * minibatch_size: (k + 1) * minibatch_size]
         minibatch_Y = shuffled_Y[:, k * minibatch_size: (k + 1) * minibatch_size]
@@ -174,6 +163,8 @@ def rand_mini_batches(X, Y, minibatch_size=64, seed=1):
         minibatch_Y = shuffled_Y[:, num_complete_minibatches * minibatch_size: m]
         minibatch = (minibatch_X, minibatch_Y)
         minibatches.append(minibatch)
+        
+    del shuffled_X, shuffled_Y #clearing unused memory
 
     return minibatches
 
