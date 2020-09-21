@@ -692,6 +692,7 @@ def learning_rate_scledule(alpha_prev, epoch, decay_rate = 1 ):
     return alpha
 #====================================================================================================================
 # Final Model Training
+
 def train(training_data, validation_data , layers_dim, hyperParams, initialization = "random", optimizer = 'bgd',regularizer = None, verbose = 3, patience = None, step_decay = None):
     # unpacking the hyperparameters
     learning_rate = hyperParams['learning_rate']
@@ -766,16 +767,10 @@ def train(training_data, validation_data , layers_dim, hyperParams, initializati
                 print("\nEpoch %d/%d: learning rate - %.6f"%(i+1,num_epoch,learning_rate))
             else:
                 print("\nEpoch %d/%d"%(i+1,num_epoch))
-        
-        #augmenting the dataset online
-        augmented_images, augmented_labels = data_generator(X_train, Y_train, batch_size = 2048, aug_count = 1, pre_process_data = True)
-        
-        #generating minibatches of the augmented dataset
-        minibatches = rand_mini_batches(augmented_images, augmented_labels, mini_batch_size, seed)
+                
+        #generating minimatches
+        minibatches = rand_mini_batches(X_train, Y_train, mini_batch_size, seed)
         total_minibatches = len(minibatches)
-        
-        #clearing the memory of unused data because once the minibatches are created they have no use
-        augmented_images, augmented_labels = (0,0)
         
         for ind, minibatch in enumerate(minibatches):
             batch_tic = time.time() # for calculating time of an epoch cycle
@@ -787,7 +782,7 @@ def train(training_data, validation_data , layers_dim, hyperParams, initializati
             AL, caches, dropout_masks = forward_prop(minibatch_X, parameters, keep_probs = keep_probs, regularizer = regularizer)
             
             #Computing cross entropy cost
-            cross_entropy_cost = softmax_cross_entropy_cost(AL, minibatch_Y, caches, lambd = lambd, regularizer = regularizer, from_logits = True)
+            cross_entropy_cost = softmax_cross_entropy_cost(AL, minibatch_Y, caches, lambd = lambd, regularizer = regularizer, from_logits = True) #accumulating the batch costs
             
             #Backward Propagation
             grads = backward_prop(AL, minibatch_Y, caches, dropout_masks = dropout_masks, keep_probs = keep_probs, lambd = lambd, regularizer = regularizer)
@@ -870,6 +865,7 @@ def train(training_data, validation_data , layers_dim, hyperParams, initializati
                "val_loss":val_losses
             }
     return history
+
 #====================================================================================================================
 #making Prediction
 # Making Predictions
