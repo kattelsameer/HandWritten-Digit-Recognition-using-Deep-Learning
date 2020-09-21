@@ -183,6 +183,36 @@ def crop_and_pad_images(images, labels, crop_center = False, save_image = False)
         cropped_images.append(cropped_image)
     
     return np.asarray(cropped_images), labels
+# =================================================( Zoom Image )=================================================
+#zooming image
+def zoom_images(images, labels, save_image = False):
+    m = labels.shape[0]
+    if save_image:
+        path = "dataset/mnist_augmented/zommed/"
+        if not os.path.exists(path):
+            os.makedirs(path)  # creating required directories recursively
+
+    zoomed_images = []
+    low = 4
+    high = 10
+    
+    for i in range(m):    
+        lx, ly = images[i].shape
+        clx = np.random.randint(low, high )
+        crx= np.random.randint(low, high )
+        cly = np.random.randint(low, high )
+        cry = np.random.randint(low, high )
+        cropped= np.copy(images[i][lx // clx: - lx // crx, ly // cly: - ly // cry])
+        
+        zoomed = Image.fromarray((cropped).astype(np.uint8)).resize((lx,ly))
+        
+        if(save_image):
+            zoomed.save(path + str(np.squeeze(labels[i]))+"_cropped_"+str(i+1)+".jpg")
+            
+        zoomed_images.append(np.asarray(zoomed))
+    
+    return np.asarray(zoomed_images), labels
+
 
 # =================================================( Flip Images Horizontally )=================================================
 #Flipping image
@@ -209,9 +239,10 @@ def horizontal_flip_images(images,labels, save_image = False):
     return np.asarray(flipped_images), labels
 
 # =====================================================( Augment Images )=====================================================
-def augment_img(images_orig, labels, horizontal_flip = False, crop_and_pad = False, rotate = False, shift = False, blur = False, save_images = False, include_original = False):
+def augment_img(images_orig, labels, horizontal_flip = False, crop_and_pad = False, rotate = False, shift = False, blur = False, zoom = False, save_images = False, include_original = False):
     
     m = labels.shape[0]
+    
     augmented_images = np.copy(images_orig)
     augmented_labels = np.copy(labels)
 
@@ -220,35 +251,43 @@ def augment_img(images_orig, labels, horizontal_flip = False, crop_and_pad = Fal
         flipped_images, flipped_labels = horizontal_flip_images(images_orig, labels, save_image = save_images)
         augmented_images = np.concatenate((augmented_images, flipped_images), axis = 0)
         augmented_labels = np.concatenate((augmented_labels, flipped_labels), axis = 0)
-     
+        flipped_images, flipped_labels = 0,0
     #random cropping and padding
     if crop_and_pad:
         cropped_images, cropped_labels = crop_and_pad_images(images_orig, labels, save_image = save_images)
         augmented_images = np.concatenate((augmented_images, cropped_images), axis = 0)
         augmented_labels = np.concatenate((augmented_labels, cropped_labels), axis = 0)
-     
+        cropped_images, cropped_labels = 0,0
     #random rotating
     if rotate:
         rotated_images, rotated_labels = rotate_images(images_orig, labels, save_image = save_images)
         augmented_images = np.concatenate((augmented_images, rotated_images), axis = 0)
         augmented_labels = np.concatenate((augmented_labels, rotated_labels), axis = 0)
-     
+        rotated_images, rotated_labels = 0,0
     #random shifting
     if shift:
         shifted_images, shifted_labels = shift_images(images_orig,labels, shifting ="both", save_image = save_images)
         augmented_images = np.concatenate((augmented_images, shifted_images), axis = 0)
         augmented_labels = np.concatenate((augmented_labels, shifted_labels), axis = 0)
-    
+        shifted_images, shifted_labels = 0,0
     #random blurring
     if blur:
         blurred_images, blurred_labels = blur_images(images_orig, labels, random_filter = True, save_image =save_images)
         augmented_images = np.concatenate((augmented_images, blurred_images), axis = 0)
         augmented_labels = np.concatenate((augmented_labels, blurred_labels), axis = 0)
-    
+        blurred_images, blurred_labels = 0,0
+        
+        #random blurring
+    if zoom:
+        zoomed_images, zoomed_labels = zoom_images(images_orig, labels, save_image =save_images)
+        augmented_images = np.concatenate((augmented_images, zoomed_images), axis = 0)
+        augmented_labels = np.concatenate((augmented_labels, zoomed_labels), axis = 0)
+        zoomed_images, zoomed_labels = 0,0
     
     #suffeling all the images
     augmented_images, augmented_labels = sample_dataset(augmented_images, augmented_labels, size_in_per = 100)
     
+     
     if include_original:
         return augmented_images, augmented_labels
     else:
@@ -340,7 +379,7 @@ def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, 
     path = "dataset/augmented_data/"
     aug_tic = time.time() # for calculating entire augmentation time
 
-    print("Generating %s Augmented images..."%(get_readable_datasize(X_orig.shape[0] * aug_count * 4)))
+    print("Generating %s Augmented images..."%(get_readable_datasize(X_orig.shape[0] * aug_count * 5)))
     
     for i in range(1, aug_count+1):
         seed += 1
@@ -365,7 +404,8 @@ def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, 
                                                              crop_and_pad = True,
                                                              rotate = True,
                                                              shift = True,
-                                                             blur = True)
+                                                             blur = True,
+                                                             zoom = True)
             
             aug_images = np.concatenate((aug_images, aug_images_batch), axis = 0)
             aug_labels = np.concatenate((aug_labels, aug_labels_batch), axis = 0)
@@ -388,8 +428,7 @@ def data_generator(X_orig, Y_orig, batch_size = 64, aug_count = 1, verbose = 0, 
             aug_data = prep_dataset(aug_images[1:], aug_labels[1:], num_class = 10)
         else:    
             aug_data = (aug_images[1:], aug_labels[1:])
-        
-        #saving the data to file
+
         save_generated_data(path, batch_no = i, data = aug_data)
         del aug_data,aug_images,aug_labels
         
