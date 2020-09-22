@@ -87,3 +87,5 @@ dataset/
 */.ipynb_checkpoints/*
 */Saved Models/*
 */Sample Images/*
+*/temp/*
+*/wandb/*
