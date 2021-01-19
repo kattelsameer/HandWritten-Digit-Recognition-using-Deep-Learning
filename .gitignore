@@ -89,3 +89,6 @@ dataset/
 */Sample Images/*
 */temp/*
 */wandb/*
+.ipynb_checkpoints
+.idea
+.gitignore
