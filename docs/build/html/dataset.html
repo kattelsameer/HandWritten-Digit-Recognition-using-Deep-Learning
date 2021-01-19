@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>dataset module &#8212; HandWritten Digit Recognizer 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HandWritten Digit Recognizer 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dataset.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-dataset">
+<span id="dataset-module"></span><h1>dataset module<a class="headerlink" href="#module-dataset" title="Permalink to this headline">¶</a></h1>
+<p>Created on Wed May 27 17:06:27 2020</p>
+<p>&#64;author: befrenz</p>
+<dl class="py function">
+<dt id="dataset.decompress_dataset">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">decompress_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">keep_original</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#decompress_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.decompress_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decompress the gzip files in the given path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – location of the file to be decompressed.</p></li>
+<li><p><strong>keep_original</strong> (<em>bool</em><em>, </em><em>optional</em>) – Keep the gzip file after decompressionif True, remove otherwise. Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decompress_dataset</span><span class="p">(</span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;dataset/fashion_mnist/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.dev_test_split">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">dev_test_split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">test_x</span></em>, <em class="sig-param"><span class="n">test_y</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#dev_test_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.dev_test_split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly splits the test set to dev and test set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>test_x</strong> (<em>numpy.ndarray</em>) – test set images of size (m,28,28), where m is num of examples in test_x.</p></li>
+<li><p><strong>test_y</strong> (<em>numpy.ndarray</em>) – test set labels of size (m,1).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Following Values</dt><dd><ul class="simple">
+<li><p><strong>dev_x</strong> (numpy.ndarray): dev set images of size (n,28,28) , where n is num of examples in dev_x.</p></li>
+<li><p><strong>dev_y</strong> (numpy.ndarray): dev set labels of size (n,1).</p></li>
+<li><p><strong>test_x</strong> (numpy.ndarray): test set images of size (n,28,28).</p></li>
+<li><p><strong>test_y</strong> (numpy.ndarray): test set labels of size (n,1).</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dev_x_split</span><span class="p">,</span> <span class="n">dev_y_split</span><span class="p">,</span> <span class="n">test_x_split</span><span class="p">,</span> <span class="n">test_y_split</span> <span class="o">=</span> <span class="n">dev_test_split</span><span class="p">(</span><span class="n">test_x</span><span class="p">,</span> <span class="n">test_y</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.download_dataset">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">download_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">to_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#download_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.download_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads the dataset form the original data source.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<em>str</em>) – Dataset used, mnist or fashion_mnist.</p></li>
+<li><p><strong>to_path</strong> (<em>str</em>) – Path of the directory where the dataset is to be downloaded.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">download_dataset</span><span class="p">(</span><span class="n">dataset</span> <span class="o">=</span> <span class="s2">&quot;fashion_mnist&quot;</span><span class="p">,</span> <span class="n">to_path</span> <span class="o">=</span> <span class="s2">&quot;dataset/fashion_mnist/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<p><a class="reference external" href="https://gist.github.com/kissgyorgy/6102803">https://gist.github.com/kissgyorgy/6102803</a> (Buffering Part)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.flatten_input">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">flatten_input</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_orig</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#flatten_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.flatten_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the flattened 2D array of input images.</p>
+<dl class="simple">
+<dt>Arguement:</dt><dd><p>x_orig (numpy.ndarray): 3D numpy array of the input set images of size (m,28,28).</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>x_flatten</strong> - 2D numpy array of flattened input data of size (784,m).</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_x_flatten</span> <span class="o">=</span> <span class="n">flatten_input</span><span class="p">(</span><span class="n">train_x</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.get_files">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">get_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">file_type</span><span class="o">=</span><span class="default_value">'all'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#get_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.get_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the files of file_type form the given path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – location where the files are to be checked.</p></li>
+<li><p><strong>file_type</strong> (<em>str</em><em>,</em><em>optional</em>) – type of files to be checked. Defaults to “all”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>files</strong> - name of the files in the given path.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">files</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_type</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.is_gzip">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">is_gzip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#is_gzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.is_gzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the file si gzip or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – file to be checked.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>True</strong> if the given file is gzip, <strong>False</strong> otherwise.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_gzip</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.label_description">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">label_description</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#label_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.label_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the description of the labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<em>str</em>) – dataset used, mnist of fashion_mnist.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>desc</strong> - label description in words.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">label_desc</span> <span class="o">=</span> <span class="n">label_description</span><span class="p">(</span><span class="n">dataset</span> <span class="o">=</span> <span class="s2">&quot;fashion_mnist&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.load_dataset">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">load_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">size_in_per</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#load_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.load_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the dataset from its raw form to an nd-array representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<em>str</em>) – dataset used, mnist or fashion_mnist.</p></li>
+<li><p><strong>size_in_per</strong> (<em>int</em><em>, </em><em>optional</em>) – size of the sample to be drawn from the dataset. Defaults to 100.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Following Values</dt><dd><ul class="simple">
+<li><p><strong>train_x_orig</strong> (numpy.ndarray): training set images of size (6000,28,28).</p></li>
+<li><p><strong>train_y_orig</strong> (numpy.ndarray): training set labels of size (60000,1).</p></li>
+<li><p><strong>test_x_orig</strong> (numpy.ndarray): test set images of size (10000,28,28).</p></li>
+<li><p><strong>test_y_orig</strong> (numpy.ndarray): test set labels of size (10000,1).</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">test_x</span><span class="p">,</span> <span class="n">test_y</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">dataset</span> <span class="o">=</span> <span class="s2">&quot;fashion_mnist&quot;</span><span class="p">,</span> <span class="n">size_in_per</span> <span class="o">=</span> <span class="mi">25</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.normalize_input">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">normalize_input</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_flatten</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#normalize_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.normalize_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalizes the pixel values of the flattened images to the range 0-1.</p>
+<dl class="simple">
+<dt>Arguement:</dt><dd><p>x_flatten (numpy.ndarray): flattened input data of size (784,m).</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>x_norm</strong> - normalized input data of size (784,m).</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_x_norm</span> <span class="o">=</span> <span class="n">normalize_input</span><span class="p">(</span><span class="n">train_x_flatten</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.one_hot_encoding">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">one_hot_encoding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_orig</span></em>, <em class="sig-param"><span class="n">num_class</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#one_hot_encoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.one_hot_encoding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform the output labels into the one-hot encoding representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_orig</strong> (<em>numpy.ndarray</em>) – numeric labels(decimal form) loaded directly from the binary file of size (1,m).</p></li>
+<li><p><strong>num_class</strong> (<em>int</em>) – number of the classes of the labels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>y_encoded</strong> - encoded ndarray of the labels with binary values of size (num_class,m).</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_y_encoded</span> <span class="o">=</span> <span class="n">one_hot_encoding</span><span class="p">(</span><span class="n">train_y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">num_class</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.prep_dataset">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">prep_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_orig</span></em>, <em class="sig-param"><span class="n">y_orig</span></em>, <em class="sig-param"><span class="n">num_class</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#prep_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.prep_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flatten and Normalize the input images and encode the output labels to one-hot representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_orig</strong> (<em>numpy.ndarray</em>) – input images of size (60000,28,28).</p></li>
+<li><p><strong>y_orig</strong> (<em>numpy.ndarray</em>) – input labels of size (60000,1).</p></li>
+<li><p><strong>num_class</strong> (<em>int</em><em>, </em><em>optional</em>) – number of the classes of the labels. Defaults to 10.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Following Values</dt><dd><ul class="simple">
+<li><p><strong>x_norm</strong> (numpy.ndarray): flattened and normalized input data.</p></li>
+<li><p><strong>y_encoded</strong> (numpy.ndarray): labels encoded in one-hot representation.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuples</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_x_norm</span><span class="p">,</span> <span class="n">train_y_encoded</span> <span class="o">=</span> <span class="n">prep_dataset</span><span class="p">(</span><span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">num_class</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.retrive_dataset">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">retrive_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#retrive_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.retrive_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrive mnist or fashion_mnist dataset from  the binary file into numpy arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – path where the files are located.</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – name of the files that are to be retrived.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Following values</dt><dd><ul class="simple">
+<li><p><strong>train_images</strong> (numpy.ndarray) : 3D array consisting of m examples of training images.</p></li>
+<li><p><strong>train_labels</strong> (numpy.ndarray) : labels for each training images.</p></li>
+<li><p><strong>test_images</strong> (numpy.ndarray) : 3D array consisting of m examples of test images.</p></li>
+<li><p><strong>test_labels</strong> (numpy.ndarray) : labels for each test images.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuples</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">test_x</span><span class="p">,</span> <span class="n">test_y</span> <span class="o">=</span> <span class="n">retrive_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p><strong>mnist</strong> (url): <a class="reference external" href="http://yann.lecun.com/exdb/mnist/">http://yann.lecun.com/exdb/mnist/</a></p></li>
+<li><p><strong>fashion_mnist</strong> (url): <a class="reference external" href="https://github.com/zalandoresearch/fashion-mnist/">https://github.com/zalandoresearch/fashion-mnist/</a></p></li>
+<li><dl class="simple">
+<dt><strong>Code for Retrival</strong> (url): <a class="reference external" href="https://www.cs.virginia.edu/~connelly/class/2015/large_scale/proj2/mnist_python">https://www.cs.virginia.edu/~connelly/class/2015/large_scale/proj2/mnist_python</a></dt><dd><p>modified to our need making data retrival 8-10 times faster.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.sample_dataset">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">sample_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">size_in_per</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#sample_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.sample_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a sample dataset from the original larger dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – original input data.</p></li>
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – original output labels.</p></li>
+<li><p><strong>size_in_per</strong> (<em>int</em>) – sample volume in percentage.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Following Values</dt><dd><ul class="simple">
+<li><p><strong>x_sample</strong> (numpy.ndarray): input sample from original dataset of size (sample_size% of x).</p></li>
+<li><p><strong>y_sample</strong> (numpy.ndarray): output sample from original dataset of size (sample_size% of y).</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_x_sample</span><span class="p">,</span> <span class="n">train_y_sample</span> <span class="o">=</span> <span class="n">sample_dataset</span><span class="p">(</span><span class="n">train_x</span><span class="p">,</span><span class="n">train_y</span><span class="p">,</span> <span class="n">size_in_per</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.visualize_data_distribution">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">visualize_data_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_orig</span></em>, <em class="sig-param"><span class="n">dataset_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#visualize_data_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.visualize_data_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots bar graph showing the distribution of examples in each class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_orig</strong> (<em>numpy.ndarray</em>) – labels of dev set.</p></li>
+<li><p><strong>dataset_type</strong> (<em>str</em>) – type of dataset, can be training, dev or test.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">visualize_data_distribution</span><span class="p">(</span><span class="n">train_y</span><span class="p">,</span> <span class="n">dataset_type</span> <span class="o">=</span> <span class="s2">&quot;training&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dataset.visualize_dataset">
+<code class="sig-prename descclassname">dataset.</code><code class="sig-name descname">visualize_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_orig</span></em>, <em class="sig-param"><span class="n">y_orig</span></em>, <em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">dataset_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dataset.html#visualize_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dataset.visualize_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots 10 sample images  with labels and label description.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_orig</strong> (<em>numpy.ndarray</em>) – 3D array representation of input images.</p></li>
+<li><p><strong>y_orig</strong> (<em>numpy.ndarray</em>) – array of labels.</p></li>
+<li><p><strong>dataset</strong> (<em>str</em>) – dataset used, mnist of fashion_mnist.</p></li>
+<li><p><strong>dataset_type</strong> (<em>str</em>) – type of dataset, can be training, dev or test.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">visualize_dataset</span><span class="p">(</span><span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">dataset</span> <span class="o">=</span> <span class="s2">&quot;fashion_mnist&quot;</span><span class="p">,</span> <span class="n">dataset_type</span> <span class="o">=</span> <span class="s2">&quot;training&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HandWritten Digit Recognizer 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Sameer Kattel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

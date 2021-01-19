@@ -1,0 +1,649 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>dataset &#8212; HandWritten Digit Recognizer 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">HandWritten Digit Recognizer 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dataset</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Wed May 27 17:06:27 2020</span>
+
+<span class="sd">@author: befrenz</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># ===================================================( Loading Dependencies )===================================================</span>
+<span class="c1"># Python Standard Libraries</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+
+<span class="kn">import</span> <span class="nn">struct</span>  <span class="c1"># for unpacking the binary data</span>
+
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">URLError</span><span class="p">,</span> <span class="n">HTTPError</span>
+
+<span class="kn">import</span> <span class="nn">gzip</span> <span class="k">as</span> <span class="nn">unzip</span>
+
+<span class="c1"># core packages</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+<span class="c1"># Doc String is based on Google Style Python Docstrings: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/index.html</span>
+<span class="c1"># Doc Rendering:sphinxcontrib.napoleon</span>
+<span class="c1"># =====================================================( Download Dataset )=====================================================</span>
+<div class="viewcode-block" id="download_dataset"><a class="viewcode-back" href="../dataset.html#dataset.download_dataset">[docs]</a><span class="k">def</span> <span class="nf">download_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">to_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Downloads the dataset form the original data source.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            dataset (str): Dataset used, mnist or fashion_mnist.</span>
+<span class="sd">            to_path (str): Path of the directory where the dataset is to be downloaded.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; download_dataset(dataset = &quot;fashion_mnist&quot;, to_path = &quot;dataset/fashion_mnist/&quot;)</span>
+<span class="sd">        </span>
+<span class="sd">        References:</span>
+<span class="sd">            https://gist.github.com/kissgyorgy/6102803 (Buffering Part)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># defining the source urls for data download</span>
+    <span class="k">if</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s2">&quot;mnist&quot;</span><span class="p">:</span>
+        <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz&quot;</span><span class="p">]</span>
+
+    <span class="k">elif</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s2">&quot;fashion_mnist&quot;</span><span class="p">:</span>
+        <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-images-idx3-ubyte.gz&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only &#39;mnist&#39; and &#39;fashion_mnist&#39; dataset are supported&quot;</span><span class="p">)</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">to_path</span>  <span class="c1"># destination path</span>
+
+    <span class="c1"># checking the path for data download and creating the required directories if not found</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Destination directory does not exist: Creating &#39;&quot;</span> <span class="o">+</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;&#39; as a new directory.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>  <span class="c1"># creating required directories recursively</span>
+
+    <span class="n">download_status</span> <span class="o">=</span> <span class="s2">&quot;succeeded&quot;</span>
+
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># getting the filename from the url</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">%s</span><span class="s2">: downloading...&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+
+                <span class="c1"># urlretrive() can also be used to obtain data directly.. this method with buffer is used to show the download progress</span>
+                <span class="n">data_online</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_local</span><span class="p">:</span>
+                    <span class="n">file_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                        <span class="n">data_online</span><span class="o">.</span><span class="n">info</span><span class="p">()[</span><span class="s2">&quot;Content-Length&quot;</span><span class="p">])</span>  <span class="c1"># getting the file size of the file from the url</span>
+                    <span class="n">file_size_mb</span> <span class="o">=</span> <span class="n">file_size</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>  <span class="c1"># for linux system use 1000 instead of 1024</span>
+                    <span class="n">downloaded_file_size</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">block_size</span> <span class="o">=</span> <span class="mi">1024</span>  <span class="c1"># setting the block size to read the data from the url</span>
+                    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">buffer</span> <span class="o">=</span> <span class="n">data_online</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">block_size</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">buffer</span><span class="p">:</span>
+                            <span class="k">break</span>
+                        <span class="n">downloaded_file_size</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+                        <span class="n">downloaded_file_size_mb</span> <span class="o">=</span> <span class="n">downloaded_file_size</span> <span class="o">/</span> <span class="p">(</span>
+                                <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>  <span class="c1"># converting file size to MB from bytes</span>
+                        <span class="n">data_local</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+
+                        <span class="n">down_percent</span> <span class="o">=</span> <span class="p">(</span><span class="n">downloaded_file_size</span> <span class="o">/</span> <span class="n">file_size</span><span class="p">)</span> <span class="o">*</span> <span class="mf">100.</span>
+                        <span class="n">inc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">down_percent</span><span class="p">)</span> <span class="o">//</span> <span class="mi">10</span>  <span class="c1"># calculating the increment of the progress bar</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%.3f</span><span class="s2"> MB  [</span><span class="si">%.3f</span><span class="s2"> MB done </span><span class="si">%s</span><span class="s2">&gt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%.0f%%</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">file_size_mb</span><span class="p">,</span> <span class="n">downloaded_file_size_mb</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="n">inc</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span> <span class="o">-</span> <span class="n">inc</span><span class="p">),</span> <span class="n">down_percent</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">error_message</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Download Failed: &#39;</span><span class="p">,</span> <span class="n">error_message</span><span class="p">)</span>
+                <span class="n">download_status</span> <span class="o">=</span> <span class="s2">&quot;failed&quot;</span>
+            <span class="k">except</span> <span class="n">URLError</span> <span class="k">as</span> <span class="n">error_message</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Download Failed: &#39;</span><span class="p">,</span> <span class="n">error_message</span><span class="p">)</span>
+                <span class="n">download_status</span> <span class="o">=</span> <span class="s2">&quot;failed&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">%s</span><span class="s2">: already exists.&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Dataset download </span><span class="si">%s</span><span class="s2">...</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">download_status</span><span class="p">)</span></div>
+
+
+<span class="c1"># =============================================( Decompressing Downloaded Dataset )=============================================</span>
+<div class="viewcode-block" id="is_gzip"><a class="viewcode-back" href="../dataset.html#dataset.is_gzip">[docs]</a><span class="k">def</span> <span class="nf">is_gzip</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if the file si gzip or not.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            filename (str): file to be checked.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: - **True** if the given file is gzip, **False** otherwise.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; is_gzip(filename)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># getting the extension from the file name</span>
+    <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;gz&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<span class="c1"># ---------------------------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="get_files"><a class="viewcode-back" href="../dataset.html#dataset.get_files">[docs]</a><span class="k">def</span> <span class="nf">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get all the files of file_type form the given path.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            path (str): location where the files are to be checked.</span>
+<span class="sd">            file_type (str,optional) : type of files to be checked. Defaults to &quot;all&quot;.</span>
+<span class="sd">       </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list: - **files** - name of the files in the given path.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; files = get_files(path, file_type = &quot;all&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># accessing all files in the supplied path</span>
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;gzip&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">is_gzip</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>  <span class="c1"># checking if the file is gzip</span>
+                    <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">files</span></div>
+
+
+<span class="c1"># ---------------------------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="decompress_dataset"><a class="viewcode-back" href="../dataset.html#dataset.decompress_dataset">[docs]</a><span class="k">def</span> <span class="nf">decompress_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">keep_original</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decompress the gzip files in the given path.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            path (str): location of the file to be decompressed.</span>
+<span class="sd">            keep_original (bool, optional): Keep the gzip file after decompressionif True, remove otherwise. Defaults to True.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; decompress_dataset(path = &quot;dataset/fashion_mnist/&quot;)            </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
+
+    <span class="c1"># checking if there are any gzip file to decompress</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No gzip file to decompress.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                      <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>  <span class="c1"># opening a file on which the gzip file content is to be written</span>
+                <span class="k">with</span> <span class="n">unzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fzip</span><span class="p">:</span>  <span class="c1"># opening the gzip file to be decompressed</span>
+                    <span class="n">file_data</span> <span class="o">=</span> <span class="n">fzip</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>  <span class="c1"># reading the gzip file</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span>  <span class="c1"># writing the read content to another local file</span>
+            <span class="k">if</span> <span class="n">keep_original</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>  <span class="c1"># removing the gzip file after decompression</span>
+        <span class="k">except</span> <span class="n">unzip</span><span class="o">.</span><span class="n">BadZipFile</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: Invalid gzip file encountered.&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dataset decompression succeeded...&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">keep_original</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original gzip files removed...&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># ====================================================( Retriving Dataset )=====================================================</span>
+<div class="viewcode-block" id="retrive_dataset"><a class="viewcode-back" href="../dataset.html#dataset.retrive_dataset">[docs]</a><span class="k">def</span> <span class="nf">retrive_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Retrive mnist or fashion_mnist dataset from  the binary file into numpy arrays.        </span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            path (str): path where the files are located.</span>
+<span class="sd">            filename (str): name of the files that are to be retrived.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuples: Following values</span>
+<span class="sd">                - **train_images** (numpy.ndarray) : 3D array consisting of m examples of training images.</span>
+<span class="sd">                - **train_labels** (numpy.ndarray) : labels for each training images.</span>
+<span class="sd">                - **test_images** (numpy.ndarray) : 3D array consisting of m examples of test images.</span>
+<span class="sd">                - **test_labels** (numpy.ndarray) : labels for each test images.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; train_x, train_y, test_x, test_y = retrive_dataset(path, filename)</span>
+<span class="sd">            </span>
+<span class="sd">        References:</span>
+<span class="sd">            - **mnist** (url): http://yann.lecun.com/exdb/mnist/</span>
+<span class="sd">            - **fashion_mnist** (url): https://github.com/zalandoresearch/fashion-mnist/</span>
+<span class="sd">            - **Code for Retrival** (url): https://www.cs.virginia.edu/~connelly/class/2015/large_scale/proj2/mnist_python</span>
+<span class="sd">                modified to our need making data retrival 8-10 times faster.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">train_img_file_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">train_lbl_file_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">test_img_file_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">test_lbl_file_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="c1"># retriving the training data</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">train_img_file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">train_fimg</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">train_lbl_file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">train_flbl</span><span class="p">:</span>
+        <span class="c1"># retriving labels</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;II&quot;</span><span class="p">,</span> <span class="n">train_flbl</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+        <span class="n">train_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">train_flbl</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># retriving images</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;IIII&quot;</span><span class="p">,</span> <span class="n">train_fimg</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+        <span class="n">train_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">train_fimg</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+
+    <span class="c1"># retriving the test data</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_img_file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">test_fimg</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_lbl_file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">test_flbl</span><span class="p">:</span>
+        <span class="c1"># retriving labels</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;II&quot;</span><span class="p">,</span> <span class="n">test_flbl</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+        <span class="n">test_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">test_flbl</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># retriving images</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&gt;IIII&quot;</span><span class="p">,</span> <span class="n">test_fimg</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+        <span class="n">test_images</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">test_fimg</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">train_images</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">60000</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">train_labels</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">60000</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">test_images</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">test_labels</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">train_images</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">test_images</span><span class="p">,</span> <span class="n">test_labels</span></div>
+
+
+<span class="c1"># ==============================================( Sampling form the Original Dataset)===========================================</span>
+<div class="viewcode-block" id="sample_dataset"><a class="viewcode-back" href="../dataset.html#dataset.sample_dataset">[docs]</a><span class="k">def</span> <span class="nf">sample_dataset</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">size_in_per</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a sample dataset from the original larger dataset</span>
+<span class="sd">       </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            x (numpy.ndarray): original input data.</span>
+<span class="sd">            y (numpy.ndarray): original output labels.</span>
+<span class="sd">            size_in_per (int): sample volume in percentage.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Following Values</span>
+<span class="sd">                - **x_sample** (numpy.ndarray): input sample from original dataset of size (sample_size% of x).</span>
+<span class="sd">                - **y_sample** (numpy.ndarray): output sample from original dataset of size (sample_size% of y).</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; train_x_sample, train_y_sample = sample_dataset(train_x,train_y, size_in_per = 100)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># getting the sample size to be returned from the percentage</span>
+    <span class="n">sample_m</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">size_in_per</span><span class="p">,</span> <span class="mi">100</span><span class="p">)))</span>  <span class="c1"># int(m*(dataVol/100))</span>
+
+    <span class="c1"># suffling the original dataset</span>
+    <span class="n">randCol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">x_suffled</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">randCol</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">y_suffled</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">randCol</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="c1"># taking samples of sample_size</span>
+    <span class="n">x_sample</span> <span class="o">=</span> <span class="n">x_suffled</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">sample_m</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">y_sample</span> <span class="o">=</span> <span class="n">y_suffled</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">sample_m</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">x_sample</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">sample_m</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">y_sample</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">sample_m</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">x_sample</span><span class="p">,</span> <span class="n">y_sample</span></div>
+
+
+<span class="c1"># ===================================================( Loading the dataset )====================================================</span>
+<div class="viewcode-block" id="load_dataset"><a class="viewcode-back" href="../dataset.html#dataset.load_dataset">[docs]</a><span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">size_in_per</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loads the dataset from its raw form to an nd-array representation.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            dataset (str): dataset used, mnist or fashion_mnist.</span>
+<span class="sd">            size_in_per (int, optional): size of the sample to be drawn from the dataset. Defaults to 100.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Following Values</span>
+<span class="sd">                - **train_x_orig** (numpy.ndarray): training set images of size (6000,28,28).</span>
+<span class="sd">                - **train_y_orig** (numpy.ndarray): training set labels of size (60000,1).</span>
+<span class="sd">                - **test_x_orig** (numpy.ndarray): test set images of size (10000,28,28).</span>
+<span class="sd">                - **test_y_orig** (numpy.ndarray): test set labels of size (10000,1).</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; train_x, train_y, test_x, test_y = load_dataset(dataset = &quot;fashion_mnist&quot;, size_in_per = 25)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;dataset/</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;train-images-idx3-ubyte&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;train-labels-idx1-ubyte&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;t10k-images-idx3-ubyte&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;t10k-labels-idx1-ubyte&quot;</span><span class="p">]</span>
+    <span class="n">gzip_filename</span> <span class="o">=</span> <span class="p">[</span><span class="n">fname</span> <span class="o">+</span> <span class="s2">&quot;.gz&quot;</span> <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">]</span>  <span class="c1"># generating the gzip file name</span>
+
+    <span class="c1"># creating a new destination path if it doesnot exist</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No destination directory exists to load the data from:</span><span class="se">\n</span><span class="s2">Creating &#39;&quot;</span> <span class="o">+</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;&#39; as a new directory...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>  <span class="c1"># making directories recursively</span>
+
+    <span class="c1"># Downloading the dataset form  the web if the path is empty (i.e if no dataset is found in the specified directory)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Downloading the </span><span class="si">%s</span><span class="s2"> dataset...&quot;</span> <span class="o">%</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="n">download_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">to_path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">files</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>  <span class="c1"># getting all the files in the path after download</span>
+
+    <span class="c1"># checking for all the decompressed files</span>
+    <span class="n">file_check</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">fname</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">file_check</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">gzip_filecheck</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">fname</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">gzip_filename</span><span class="p">)</span>  <span class="c1"># checking for all the gzip files</span>
+        <span class="k">if</span> <span class="n">gzip_filecheck</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Downloading missing gzip files of </span><span class="si">%s</span><span class="s2"> dataset...&quot;</span> <span class="o">%</span> <span class="n">dataset</span><span class="p">)</span>
+            <span class="n">download_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">to_path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>  <span class="c1"># downloading missing zip file of the dataset</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Decompressing the </span><span class="si">%s</span><span class="s2"> dataset...&quot;</span> <span class="o">%</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="n">decompress_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">keep_original</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># decompressing the dataset</span>
+
+    <span class="n">train_x_temp</span><span class="p">,</span> <span class="n">train_y_temp</span><span class="p">,</span> <span class="n">test_x_temp</span><span class="p">,</span> <span class="n">test_y_temp</span> <span class="o">=</span> <span class="n">retrive_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>  <span class="c1"># retriving the dataset</span>
+
+    <span class="c1"># size_in_per = 100 means getting 100% of data suffled and returned</span>
+    <span class="n">train_x_orig</span><span class="p">,</span> <span class="n">train_y_orig</span> <span class="o">=</span> <span class="n">sample_dataset</span><span class="p">(</span><span class="n">train_x_temp</span><span class="p">,</span> <span class="n">train_y_temp</span><span class="p">,</span> <span class="n">size_in_per</span><span class="p">)</span>
+    <span class="n">test_x_orig</span><span class="p">,</span> <span class="n">test_y_orig</span> <span class="o">=</span> <span class="n">sample_dataset</span><span class="p">(</span><span class="n">test_x_temp</span><span class="p">,</span> <span class="n">test_y_temp</span><span class="p">,</span> <span class="n">size_in_per</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">train_x_orig</span><span class="p">,</span> <span class="n">train_y_orig</span><span class="p">,</span> <span class="n">test_x_orig</span><span class="p">,</span> <span class="n">test_y_orig</span></div>
+
+
+<span class="c1"># ==========================================( Splitting Dataset into est and Dev Set )==========================================</span>
+<div class="viewcode-block" id="dev_test_split"><a class="viewcode-back" href="../dataset.html#dataset.dev_test_split">[docs]</a><span class="k">def</span> <span class="nf">dev_test_split</span><span class="p">(</span><span class="n">test_x</span><span class="p">,</span> <span class="n">test_y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Randomly splits the test set to dev and test set.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            test_x (numpy.ndarray): test set images of size (m,28,28), where m is num of examples in test_x.</span>
+<span class="sd">            test_y (numpy.ndarray): test set labels of size (m,1).</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Following Values</span>
+<span class="sd">                - **dev_x** (numpy.ndarray): dev set images of size (n,28,28) , where n is num of examples in dev_x.</span>
+<span class="sd">                - **dev_y** (numpy.ndarray): dev set labels of size (n,1).</span>
+<span class="sd">                - **test_x** (numpy.ndarray): test set images of size (n,28,28).</span>
+<span class="sd">                - **test_y** (numpy.ndarray): test set labels of size (n,1).</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; dev_x_split, dev_y_split, test_x_split, test_y_split = dev_test_split(test_x, test_y)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">test_y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">m</span> <span class="o">//</span> <span class="mi">2</span>  <span class="c1"># making the split size into half of the original data size</span>
+    <span class="c1"># suffling the test dataset</span>
+    <span class="n">randCol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">suffled_x</span> <span class="o">=</span> <span class="n">test_x</span><span class="p">[</span><span class="n">randCol</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">suffled_y</span> <span class="o">=</span> <span class="n">test_y</span><span class="p">[</span><span class="n">randCol</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="c1"># splitting the test set into dev and test set , 50% each</span>
+    <span class="n">dev_x_split</span> <span class="o">=</span> <span class="n">suffled_x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">dev_y_split</span> <span class="o">=</span> <span class="n">suffled_y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="n">test_x_split</span> <span class="o">=</span> <span class="n">suffled_x</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">m</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">test_y_split</span> <span class="o">=</span> <span class="n">suffled_y</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">m</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">dev_x_split</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">dev_y_split</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">test_x_split</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">test_y_split</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">dev_x_split</span><span class="p">,</span> <span class="n">dev_y_split</span><span class="p">,</span> <span class="n">test_x_split</span><span class="p">,</span> <span class="n">test_y_split</span></div>
+
+
+<span class="c1"># ===========================================( Visualizing the Dataset Distribution )===========================================</span>
+<div class="viewcode-block" id="visualize_data_distribution"><a class="viewcode-back" href="../dataset.html#dataset.visualize_data_distribution">[docs]</a><span class="k">def</span> <span class="nf">visualize_data_distribution</span><span class="p">(</span><span class="n">y_orig</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plots bar graph showing the distribution of examples in each class.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            y_orig (numpy.ndarray): labels of dev set.</span>
+<span class="sd">            dataset_type(str): type of dataset, can be training, dev or test.</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; visualize_data_distribution(train_y, dataset_type = &quot;training&quot;)            </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># plotting the bar graph for each dataset labels</span>
+    <span class="n">unique</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_orig</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">unique</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span>
+    <span class="n">max_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="n">unique</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span> <span class="o">+</span> <span class="n">max_value</span> <span class="o">//</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Distribution of Examples in </span><span class="si">%s</span><span class="s2"> Set&quot;</span> <span class="o">%</span> <span class="n">dataset_type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Classes&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Number of Examples&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<span class="c1"># ==============================================( Defining the Label Description )==============================================</span>
+<div class="viewcode-block" id="label_description"><a class="viewcode-back" href="../dataset.html#dataset.label_description">[docs]</a><span class="k">def</span> <span class="nf">label_description</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the description of the labels.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            dataset(str): dataset used, mnist of fashion_mnist.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            dict: - **desc** - label description in words.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; label_desc = label_description(dataset = &quot;fashion_mnist&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># creating the label description for fashion_mnist dataset</span>
+    <span class="k">if</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s2">&quot;fashion_mnist&quot;</span><span class="p">:</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;T-shirt/top&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Trouser&quot;</span><span class="p">,</span>
+                <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;Pullover&quot;</span><span class="p">,</span>
+                <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;Dress&quot;</span><span class="p">,</span>
+                <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;Coat&quot;</span><span class="p">,</span>
+                <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;Sandal&quot;</span><span class="p">,</span>
+                <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;Shirt&quot;</span><span class="p">,</span>
+                <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;Sneaker&quot;</span><span class="p">,</span>
+                <span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;Bag&quot;</span><span class="p">,</span>
+                <span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;Ankle boot&quot;</span><span class="p">}</span>
+    <span class="c1"># creating the label description for mnist dataset</span>
+    <span class="k">elif</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s2">&quot;mnist&quot;</span><span class="p">:</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;Zero&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;One&quot;</span><span class="p">,</span>
+                <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;Two&quot;</span><span class="p">,</span>
+                <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;Three&quot;</span><span class="p">,</span>
+                <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;Four&quot;</span><span class="p">,</span>
+                <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;Five&quot;</span><span class="p">,</span>
+                <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;Six&quot;</span><span class="p">,</span>
+                <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;Seven&quot;</span><span class="p">,</span>
+                <span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;Eight&quot;</span><span class="p">,</span>
+                <span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;Nine&quot;</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dataset must be mnist or fashion_mnist&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">desc</span></div>
+
+
+<span class="c1"># ===================================================( Visualizing the Dataset )================================================</span>
+<div class="viewcode-block" id="visualize_dataset"><a class="viewcode-back" href="../dataset.html#dataset.visualize_dataset">[docs]</a><span class="k">def</span> <span class="nf">visualize_dataset</span><span class="p">(</span><span class="n">x_orig</span><span class="p">,</span> <span class="n">y_orig</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plots 10 sample images  with labels and label description.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            x_orig (numpy.ndarray): 3D array representation of input images.</span>
+<span class="sd">            y_orig (numpy.ndarray): array of labels.</span>
+<span class="sd">            dataset (str): dataset used, mnist of fashion_mnist.</span>
+<span class="sd">            dataset_type (str): type of dataset, can be training, dev or test.</span>
+<span class="sd">        </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; visualize_dataset(train_x, train_y, dataset = &quot;fashion_mnist&quot;, dataset_type = &quot;training&quot;)            </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># getting the label description</span>
+    <span class="n">label_desc</span> <span class="o">=</span> <span class="n">label_description</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="c1"># generating a range of index for image samples to be visualized</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="c1"># generating the visualization lables based on the dataset_type</span>
+    <span class="n">visual_title</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> Set&quot;</span> <span class="o">%</span> <span class="n">dataset_type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">visual_title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="c1"># plotting the sample images along with their labels</span>
+    <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">rng</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">x_orig</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Label: </span><span class="si">%d</span><span class="s2"> | </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">y_orig</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label_desc</span><span class="p">[</span><span class="n">y_orig</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span></div>
+
+
+<span class="c1"># ==================================================( Flattening the Input Image)==============================================</span>
+<div class="viewcode-block" id="flatten_input"><a class="viewcode-back" href="../dataset.html#dataset.flatten_input">[docs]</a><span class="k">def</span> <span class="nf">flatten_input</span><span class="p">(</span><span class="n">x_orig</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the flattened 2D array of input images.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguement:</span>
+<span class="sd">            x_orig (numpy.ndarray): 3D numpy array of the input set images of size (m,28,28).</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: -  **x_flatten** - 2D numpy array of flattened input data of size (784,m).</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; train_x_flatten = flatten_input(train_x)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">x_orig</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># flattening the image. The &quot;-1&quot; makes reshape flatten the remaining dimensions</span>
+    <span class="n">x_flatten</span> <span class="o">=</span> <span class="n">x_orig</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x_orig</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">x_flatten</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">784</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">x_flatten</span></div>
+
+
+<span class="c1"># ===================================================( Normalizing the Input Image )===========================================</span>
+<div class="viewcode-block" id="normalize_input"><a class="viewcode-back" href="../dataset.html#dataset.normalize_input">[docs]</a><span class="k">def</span> <span class="nf">normalize_input</span><span class="p">(</span><span class="n">x_flatten</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Normalizes the pixel values of the flattened images to the range 0-1.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguement:</span>
+<span class="sd">            x_flatten (numpy.ndarray): flattened input data of size (784,m).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray:- **x_norm** - normalized input data of size (784,m).</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; train_x_norm = normalize_input(train_x_flatten)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">x_flatten</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Normalizing the data into the range between 0 and 1.</span>
+    <span class="n">x_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">x_flatten</span><span class="p">,</span> <span class="mf">255.</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">x_norm</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">784</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">x_norm</span></div>
+
+
+<span class="c1"># =====================================( One-Hot Encoding Representation of Output Labels )====================================</span>
+<div class="viewcode-block" id="one_hot_encoding"><a class="viewcode-back" href="../dataset.html#dataset.one_hot_encoding">[docs]</a><span class="k">def</span> <span class="nf">one_hot_encoding</span><span class="p">(</span><span class="n">y_orig</span><span class="p">,</span> <span class="n">num_class</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform the output labels into the one-hot encoding representation.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            y_orig (numpy.ndarray): numeric labels(decimal form) loaded directly from the binary file of size (1,m).</span>
+<span class="sd">            num_class (int): number of the classes of the labels.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: - **y_encoded** - encoded ndarray of the labels with binary values of size (num_class,m).</span>
+<span class="sd">            </span>
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; train_y_encoded = one_hot_encoding(train_y.T, num_class = 10)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">y_orig</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># encoding the labels</span>
+    <span class="n">y_encoded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">num_class</span><span class="p">)[</span><span class="n">y_orig</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">assert</span> <span class="p">(</span><span class="n">y_encoded</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">num_class</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">y_encoded</span></div>
+
+
+<span class="c1"># ============================================( Preparing the Dataset for Training )===========================================</span>
+<div class="viewcode-block" id="prep_dataset"><a class="viewcode-back" href="../dataset.html#dataset.prep_dataset">[docs]</a><span class="k">def</span> <span class="nf">prep_dataset</span><span class="p">(</span><span class="n">x_orig</span><span class="p">,</span> <span class="n">y_orig</span><span class="p">,</span> <span class="n">num_class</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Flatten and Normalize the input images and encode the output labels to one-hot representation.</span>
+<span class="sd">        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            x_orig (numpy.ndarray): input images of size (60000,28,28).</span>
+<span class="sd">            y_orig (numpy.ndarray): input labels of size (60000,1).</span>
+<span class="sd">            num_class(int, optional): number of the classes of the labels. Defaults to 10.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuples: Following Values</span>
+<span class="sd">                - **x_norm** (numpy.ndarray): flattened and normalized input data.</span>
+<span class="sd">                - **y_encoded** (numpy.ndarray): labels encoded in one-hot representation.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; train_x_norm, train_y_encoded = prep_dataset(train_x, train_y, num_class = 10)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># flatten the input images</span>
+    <span class="n">x_flatten</span> <span class="o">=</span> <span class="n">flatten_input</span><span class="p">(</span><span class="n">x_orig</span><span class="p">)</span>
+
+    <span class="c1"># normalize the input images</span>
+    <span class="n">x_norm</span> <span class="o">=</span> <span class="n">normalize_input</span><span class="p">(</span><span class="n">x_flatten</span><span class="p">)</span>
+
+    <span class="c1"># encode the output labels</span>
+    <span class="n">y_encoded</span> <span class="o">=</span> <span class="n">one_hot_encoding</span><span class="p">(</span><span class="n">y_orig</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">num_class</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x_norm</span><span class="p">,</span> <span class="n">y_encoded</span></div>
+
+<span class="c1"># ==============================================================================================================================</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">HandWritten Digit Recognizer 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Sameer Kattel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

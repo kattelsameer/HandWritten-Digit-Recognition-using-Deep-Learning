@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ffnn module &#8212; HandWritten Digit Recognizer 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HandWritten Digit Recognizer 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ffnn.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ffnn">
+<span id="ffnn-module"></span><h1>ffnn module<a class="headerlink" href="#module-ffnn" title="Permalink to this headline">¶</a></h1>
+<p>Created on Mon Jun  8 10:26:57 2020</p>
+<p>&#64;author: befrenz</p>
+<dl class="py function">
+<dt id="ffnn.backward_activation">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">backward_activation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dA</span></em>, <em class="sig-param"><span class="n">cache</span></em>, <em class="sig-param"><span class="n">lambd</span></em>, <em class="sig-param"><span class="n">regularizer</span></em>, <em class="sig-param"><span class="n">activation</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#backward_activation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.backward_activation" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><dl>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sum_cache</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">activation_cache</span> <span class="o">=</span> <span class="n">Z</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span> <span class="o">=</span> <span class="p">(</span><span class="n">sum_cache</span><span class="p">,</span> <span class="n">activation_cache</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dA_prev</span><span class="p">,</span> <span class="n">dW</span><span class="p">,</span> <span class="n">db</span> <span class="o">=</span> <span class="n">backward_activation</span><span class="p">(</span><span class="n">dA</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">lambd</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span><span class="n">regularizer</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;With Relu&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;dA_prev = &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dA_prev</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;dW = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dW</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;db = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dA_prev</span><span class="p">,</span> <span class="n">dW</span><span class="p">,</span> <span class="n">db</span> <span class="o">=</span> <span class="n">backward_activation</span><span class="p">(</span><span class="n">dA</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">lambd</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span><span class="n">regularizer</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s2">&quot;softmax&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>With Softmax”)</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;dA_prev = &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dA_prev</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;dW = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dW</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;db = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl>
+<dt>Output:</dt><dd><p>With Relu
+dA_prev = [[ 0.44090989 -0.        ]</p>
+<blockquote>
+<div><p>[ 0.37883606 -0.        ]
+[-0.2298228   0.        ]]</p>
+</div></blockquote>
+<p>dW = [[ 0.44513824  0.37371418 -0.10478989]]
+db = [[-0.20837892]]</p>
+<p>With Softmax
+dA_prev = [[ 0.44090989  0.05952761]</p>
+<blockquote>
+<div><p>[ 0.37883606  0.05114697]
+[-0.2298228  -0.03102857]]</p>
+</div></blockquote>
+<p>dW = [[ 0.39899183  0.3973954  -0.06975568]]
+db = [[-0.23651234]]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.backward_dropout">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">backward_dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dA_prev_temp</span></em>, <em class="sig-param"><span class="n">D</span></em>, <em class="sig-param"><span class="n">keep_prob</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#backward_dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.backward_dropout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.backward_grad">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">backward_grad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dZ</span></em>, <em class="sig-param"><span class="n">cache</span></em>, <em class="sig-param"><span class="n">lambd</span></em>, <em class="sig-param"><span class="n">regularizer</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#backward_grad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.backward_grad" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><dl>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dZ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dA_prev</span><span class="p">,</span> <span class="n">dW</span><span class="p">,</span> <span class="n">db</span> <span class="o">=</span> <span class="n">backward_grad</span><span class="p">(</span><span class="n">dZ</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">lambd</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">regularizer</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Without L2 Regularization&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;dA_prev = &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dA_prev</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;dW = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dW</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;db = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">l2_dA_prev</span><span class="p">,</span> <span class="n">l2_dW</span><span class="p">,</span> <span class="n">l2_db</span> <span class="o">=</span> <span class="n">backward_grad</span><span class="p">(</span><span class="n">dZ</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">lambd</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">regularizer</span> <span class="o">=</span> <span class="s1">&#39;l2&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>With L2 Regularization”)</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;dA_prev = &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">l2_dA_prev</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;dW = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">l2_dW</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;db = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">l2_db</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl>
+<dt>Output:</dt><dd><p>Without L2 Regularization
+dA_prev = [[-1.15171336  0.06718465 -0.3204696   2.09812712]</p>
+<blockquote>
+<div><p>[ 0.60345879 -3.72508701  5.81700741 -3.84326836]
+[-0.4319552  -1.30987417  1.72354705  0.05070578]
+[-0.38981415  0.60811244 -1.25938424  1.47191593]
+[-2.52214926  2.67882552 -0.67947465  1.48119548]]</p>
+</div></blockquote>
+<dl class="simple">
+<dt>dW = [[ 0.07313866 -0.0976715  -0.87585828  0.73763362  0.00785716]</dt><dd><p>[ 0.85508818  0.37530413 -0.59912655  0.71278189 -0.58931808]
+[ 0.97913304 -0.24376494 -0.08839671  0.55151192 -0.10290907]]</p>
+</dd>
+<dt>db = [[-0.14713786]</dt><dd><p>[-0.11313155]
+[-0.13209101]]</p>
+</dd>
+</dl>
+<p>With L2 Regularization
+dA_prev = [[-1.15171336  0.06718465 -0.3204696   2.09812712]</p>
+<blockquote>
+<div><p>[ 0.60345879 -3.72508701  5.81700741 -3.84326836]
+[-0.4319552  -1.30987417  1.72354705  0.05070578]
+[-0.38981415  0.60811244 -1.25938424  1.47191593]
+[-2.52214926  2.67882552 -0.67947465  1.48119548]]</p>
+</div></blockquote>
+<dl class="simple">
+<dt>dW = [[-0.0814752  -0.28784277 -1.02688866  0.73478408 -0.24353767]</dt><dd><p>[ 0.90783172  0.74875962 -0.43216662  0.6696189  -0.78903459]
+[ 0.81102242  0.13703735 -0.07696496  0.4081879  -0.05995309]]</p>
+</dd>
+<dt>db = [[-0.14713786]</dt><dd><p>[-0.11313155]
+[-0.13209101]]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.backward_prop">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">backward_prop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">AL</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">caches</span></em>, <em class="sig-param"><span class="n">dropout_masks</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">keep_probs</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lambd</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">regularizer</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#backward_prop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.backward_prop" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache_activation_1</span> <span class="o">=</span> <span class="p">((</span><span class="n">A1</span><span class="p">,</span> <span class="n">W1</span><span class="p">,</span> <span class="n">b1</span><span class="p">),</span> <span class="n">Z1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache_activation_2</span> <span class="o">=</span> <span class="p">((</span><span class="n">A2</span><span class="p">,</span> <span class="n">W2</span><span class="p">,</span> <span class="n">b2</span><span class="p">),</span> <span class="n">Z2</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">caches</span> <span class="o">=</span> <span class="p">(</span><span class="n">cache_activation_1</span><span class="p">,</span> <span class="n">cache_activation_2</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grads</span> <span class="o">=</span> <span class="n">backward_prop</span><span class="p">(</span><span class="n">AL</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">caches</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">grads</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; : &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl>
+<dt>Output:</dt><dd><dl class="simple">
+<dt>dA1<span class="classifier">[[-0.80745758 -0.44693186]</span></dt><dd><p>[ 0.88640102  0.49062745]
+[-0.10403132 -0.05758186]]</p>
+</dd>
+</dl>
+<p>dW2 : [[ 0.50767257 -0.42243102 -1.15550109]]
+db2 : [[0.61256916]]
+dA0 : [[ 0.          0.53064147]</p>
+<blockquote>
+<div><p>[ 0.         -0.3319644 ]
+[ 0.         -0.32565192]
+[ 0.         -0.75222096]]</p>
+</div></blockquote>
+<dl class="simple">
+<dt>dW1<span class="classifier">[[0.41642713 0.07927654 0.14011329 0.10664197]</span></dt><dd><p>[0.         0.         0.         0.        ]
+[0.05365169 0.01021384 0.01805193 0.01373955]]</p>
+</dd>
+<dt>db1<span class="classifier">[[-0.22346593]</span></dt><dd><p>[ 0.        ]
+[-0.02879093]]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.evaluate">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;W1&quot;</span><span class="p">:</span> <span class="n">W1</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="s2">&quot;b1&quot;</span><span class="p">:</span> <span class="n">b1</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="s2">&quot;W2&quot;</span><span class="p">:</span> <span class="n">W2</span><span class="p">,</span>
+<span class="gp">... </span>              <span class="s2">&quot;b2&quot;</span><span class="p">:</span> <span class="n">b2</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acc</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;acc = </span><span class="si">%f</span><span class="s2"> | cost = </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span><span class="n">loss</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><p>acc = 0.500000 | cost = 0.769464</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.forward_activation">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">forward_activation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">A_prev</span></em>, <em class="sig-param"><span class="n">W</span></em>, <em class="sig-param"><span class="n">b</span></em>, <em class="sig-param"><span class="n">activation</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#forward_activation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.forward_activation" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A_prev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="n">forward_activation</span><span class="p">(</span><span class="n">A_prev</span><span class="p">,</span><span class="n">W</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;relu&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A with Relu = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="n">forward_activation</span><span class="p">(</span><span class="n">A_prev</span><span class="p">,</span><span class="n">W</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;softmax&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A with Softmax = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><p>A with Relu = [[3.26295337 0.        ]]
+A with Softmax = [[1. 1.]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.forward_dropout">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">forward_dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">A</span></em>, <em class="sig-param"><span class="n">keep_probs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#forward_dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.forward_dropout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.forward_prop">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">forward_prop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">keep_probs</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">regularizer</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#forward_prop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.forward_prop" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><dl>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;W1&quot;</span><span class="p">:</span> <span class="n">W1</span><span class="p">,</span>
+<span class="go">                  &quot;b1&quot;: b1,</span>
+<span class="go">                  &quot;W2&quot;: W2,</span>
+<span class="go">                  &quot;b2&quot;: b2}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AL</span><span class="p">,</span> <span class="n">caches</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">forward_prop</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;AL without dropout = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">AL</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AL</span><span class="p">,</span> <span class="n">caches</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">forward_prop</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span><span class="n">keep_probs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">],</span> <span class="n">regularizer</span> <span class="o">=</span> <span class="s2">&quot;dropout&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div></blockquote>
+<p>AL with dropout = ” + str(AL))</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Length of caches list = ” + str(len(caches)))</p>
+<blockquote>
+<div><dl>
+<dt>Output:</dt><dd><dl class="simple">
+<dt>AL without dropout = [[0.25442549 0.64096177]</dt><dd><p>[0.74557451 0.35903823]]</p>
+</dd>
+<dt>AL with dropout = [[0.20251119 0.61487938]</dt><dd><p>[0.79748881 0.38512062]]</p>
+</dd>
+</dl>
+<p>Length of caches list = 2</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.forward_sum">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">forward_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">A_prev</span></em>, <em class="sig-param"><span class="n">W</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#forward_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.forward_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">forward_sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">W</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Z = &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">Z</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><p>Z = [[ 3.26295337 -1.23429987]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.init_hyperParams">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">init_hyperParams</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alpha</span></em>, <em class="sig-param"><span class="n">num_epoch</span></em>, <em class="sig-param"><span class="n">minibatch_size</span></em>, <em class="sig-param"><span class="n">lambd</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">keep_probs</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#init_hyperParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.init_hyperParams" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>knbknc.</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>getget.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hyperParams</span> <span class="o">=</span> <span class="n">init_hyperParams</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">minibatch_size</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span><span class="n">lambd</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span><span class="n">keep_probs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.8</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.init_layers">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">init_layers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">hidden_layers</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#init_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.init_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the layers of networks with the numberof nodes in each layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mnjnj.</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>knlknl.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl class="simple">
+<dt>Here, shape of x = (784,m)</dt><dd><p>shape of y = (10,m)</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">layers_dim</span> <span class="o">=</span> <span class="n">init_layers</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">hidden_layers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span><span class="mi">16</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">layers_dim</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Outputs:</dt><dd><p>[784, 32, 16, 10]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.init_parameters">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">init_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layers_dim</span></em>, <em class="sig-param"><span class="n">initialization</span><span class="o">=</span><span class="default_value">'random'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#init_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.init_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the parameters (W,b) for each layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kngnjgjg.</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nkngkg.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Here, layers_dim = [784, 32, 16, 10]
+&gt;&gt;&gt; parameters = init_parameters(layers_dim, initialization = “random”)
+&gt;&gt;&gt; print(“Layer    Weight          Bias”)
+&gt;&gt;&gt; print(“================================”)
+&gt;&gt;&gt; for l in range(1,len(layers_dim)):
+…     print(str(l) +”     ” + str(parameters[‘W’+str(l)].shape) +”        “+ str(parameters[‘b’+str(l)].shape))</p>
+<dl class="simple">
+<dt>Outputs:</dt><dd><p>1        (32, 784)      (32, 1)
+2        (16, 32)       (16, 1)
+3        (10, 16)       (10, 1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.initialize_adam">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">initialize_adam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#initialize_adam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.initialize_adam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.predict">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">second_guess</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.softmax_cross_entropy_cost">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">softmax_cross_entropy_cost</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">AL</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">caches</span></em>, <em class="sig-param"><span class="n">lambd</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">regularizer</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#softmax_cross_entropy_cost"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.softmax_cross_entropy_cost" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.21200131e-01</span><span class="p">,</span> <span class="mf">1.55876995e-04</span><span class="p">],</span>
+<span class="go">               [6.91917292e-02, 1.18118501e-05],</span>
+<span class="go">               [5.09608140e-01, 9.99832311e-01]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cost</span> <span class="o">=</span> <span class="n">softmax_cross_entropy_cost</span><span class="p">(</span><span class="n">AL</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">caches</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cost without l2 = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cost</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cost</span> <span class="o">=</span> <span class="n">softmax_cross_entropy_cost</span><span class="p">(</span><span class="n">AL</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">caches</span><span class="p">,</span> <span class="n">lambd</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">regularizer</span> <span class="o">=</span> <span class="s1">&#39;l2&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cost with l2 = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cost</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><p>Cost without l2 = 0.6742809046007259
+Cost with l2 = 8.875542970361</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.train">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X_train</span></em>, <em class="sig-param"><span class="n">Y_train</span></em>, <em class="sig-param"><span class="n">X_dev</span></em>, <em class="sig-param"><span class="n">Y_dev</span></em>, <em class="sig-param"><span class="n">layers_dim</span></em>, <em class="sig-param"><span class="n">hyperParams</span></em>, <em class="sig-param"><span class="n">initialization</span><span class="o">=</span><span class="default_value">'random'</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">'bgd'</span></em>, <em class="sig-param"><span class="n">regularizer</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.train" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ffnn.update_parameters">
+<code class="sig-prename descclassname">ffnn.</code><code class="sig-name descname">update_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">grads</span></em>, <em class="sig-param"><span class="n">learning_rate</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">'bgd'</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">s</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">t</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ffnn.html#update_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ffnn.update_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;W1&quot;</span><span class="p">:</span> <span class="n">W1</span><span class="p">,</span>
+<span class="go">              &quot;b1&quot;: b1,</span>
+<span class="go">              &quot;W2&quot;: W2,</span>
+<span class="go">              &quot;b2&quot;: b2}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dW1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dW2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grads</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dW1&quot;</span><span class="p">:</span> <span class="n">dW1</span><span class="p">,</span>
+<span class="go">         &quot;db1&quot;: db1,</span>
+<span class="go">         &quot;dW2&quot;: dW2,</span>
+<span class="go">         &quot;db2&quot;: db2}</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">update_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;W1 = &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;W1&quot;</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;b1 = &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;b1&quot;</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;W2 = &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;W2&quot;</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;b2 = &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;b2&quot;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<dl>
+<dt>Output:</dt><dd><dl class="simple">
+<dt>W1 = [[-0.59562069 -0.09991781 -2.14584584  1.82662008]</dt><dd><p>[-1.76569676 -0.80627147  0.51115557 -1.18258802]
+[-1.0535704  -0.86128581  0.68284052  2.20374577]]</p>
+</dd>
+<dt>b1 = [[-0.04659241]</dt><dd><p>[-1.28888275]
+[ 0.53405496]]</p>
+</dd>
+</dl>
+<p>W2 = [[-0.55569196  0.0354055   1.32964895]]
+b2 = [[-0.84610769]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HandWritten Digit Recognizer 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Sameer Kattel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

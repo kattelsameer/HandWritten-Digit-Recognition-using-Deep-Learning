@@ -1,0 +1,684 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ModelUtils module &#8212; HandWritten Digit Recognizer 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HandWritten Digit Recognizer 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ModelUtils.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-ModelUtils">
+<span id="modelutils-module"></span><h1>ModelUtils module<a class="headerlink" href="#module-ModelUtils" title="Permalink to this headline">¶</a></h1>
+<p>Created on Mon Jun  8 10:26:57 2020</p>
+<p>&#64;author: befrenz</p>
+<dl class="py function">
+<dt id="ModelUtils.accuracy">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">accuracy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cm</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the accuracy of the prediction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cm</strong> (<em>numpy.ndarray</em>) – 2D confusion matrix.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>acc</strong>: Accuracy of the prediction.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.float64</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cm</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">4</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acc</span> <span class="o">=</span> <span class="n">accuracy</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Outputs:</dt><dd><p>0.8</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.confusion_matrix">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">confusion_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_orig</span></em>, <em class="sig-param"><span class="n">prediction</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a confusion matrix for a given output labels and prediction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_orig</strong> (<em>numpy.ndarray</em>) – Original Output Labels of shape(m,1); m = # of examples.</p></li>
+<li><p><strong>prediction</strong> (<em>numpy.ndarray</em>) – Predicted Labels of the dataset of shape (1,m).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>cm</strong>: 2D confusion matrix.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prediction</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;First Prediction&quot;</span><span class="p">:</span><span class="n">pred</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cm_train</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">prediction</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cm_train</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><dl class="simple">
+<dt>[[1 0 0 0 0 0]</dt><dd><p>[0 0 1 0 0 0]
+[0 0 4 0 0 0]
+[0 1 0 1 0 0]
+[0 0 0 0 1 0]
+[0 0 0 0 0 1]]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.convert_time">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">convert_time</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">millisec</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#convert_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.convert_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts time in miliseconf to higher values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>milisec</strong> (<em>int</em>) – Time in mili-seconds.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Following values
+- <strong>hours</strong> (int):  Time in hours.
+- <strong>mins</strong> (int): Time in minutes.
+- <strong>secs</strong> (int):  Time in seconds.
+- <strong>milisec</strong> (int): Time in mili-seconds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hr</span><span class="p">,</span><span class="n">mins</span><span class="p">,</span><span class="n">sec</span><span class="p">,</span><span class="n">milisec</span> <span class="o">=</span> <span class="n">convert_time</span><span class="p">(</span><span class="n">millisec</span> <span class="o">=</span> <span class="mi">12450</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">hr </span><span class="si">%d</span><span class="s2">mins </span><span class="si">%d</span><span class="s2">s </span><span class="si">%d</span><span class="s2">ms&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">hr</span><span class="p">,</span><span class="n">mins</span><span class="p">,</span><span class="n">sec</span><span class="p">,</span><span class="n">milisec</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Outputs:</dt><dd><p>0hr 0mins 12s 450ms</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.f1_score">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">f1_score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prec</span></em>, <em class="sig-param"><span class="n">rec</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#f1_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.f1_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the f1-score for the prediction of an individual label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prec</strong> (<em>numpy.float64</em>) – precision for a label.</p></li>
+<li><p><strong>rec</strong> (<em>numpy.float64</em>) – recall for a label.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>f1</strong>: f1-score for the precision and recall.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.float64</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prec</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rec</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span><span class="n">rec</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><p>0.888888888888889</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.load_model">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">load_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the saved model from a pickle file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<em>str</em>) – name of the file to be loaded from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>trained model to be saved in the file. Consists of Parameters and activations</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>model (dict)</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="n">fname</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.macro_f1_score">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">macro_f1_score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f1s</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#macro_f1_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.macro_f1_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the macro average of the f1-score for the prediction of all the label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f1s</strong> (<em>list</em>) – lists of f1-scores of type numpy.float64.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>f1_mac_avg</strong>: macro average of the f1-scores.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.float64</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">avg_f1</span> <span class="o">=</span> <span class="n">macro_f1_score</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.macro_precision_average">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">macro_precision_average</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">precs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#macro_precision_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.macro_precision_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the macro average of the precisions for the prediction of all the label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>precs</strong> (<em>list</em>) – lists of precisions of type numpy.float64.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>prec_mac_avg</strong>: macro average of the precisions.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.float64</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">avg_precision</span> <span class="o">=</span> <span class="n">macro_precision_average</span><span class="p">(</span><span class="n">prec</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.macro_recall_average">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">macro_recall_average</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">recs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#macro_recall_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.macro_recall_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the macro average of the recall for the prediction of all the label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>recs</strong> (<em>list</em>) – lists of recalls of type numpy.float64.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>rec_mac_avg</strong>: macro average of the recalls.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.float64</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">avg_recall</span> <span class="o">=</span> <span class="n">macro_recall_average</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.metric_summary">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">metric_summary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metrics</span></em>, <em class="sig-param"><span class="n">macro_metrics</span></em>, <em class="sig-param"><span class="n">accuracy</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#metric_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.metric_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the metric summary after evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metrices</strong> (<em>dict</em>) – Model Metrices including list of Precision, Recall and F1-score.</p></li>
+<li><p><strong>macro_metrices</strong> (<em>dict</em>) – Model Macro metrices including Macro Precision Average, Macro Recall Average and Macro F1-score Average.</p></li>
+<li><p><strong>accuracy</strong> (<em>numpy.float64</em>) – Accuracy of the prediction.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metric_summary</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">macro_metrics</span><span class="p">,</span> <span class="n">acc</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.model_metrics">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">model_metrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cm</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#model_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.model_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the metrices and macro metrices for the evaluation of the model.
+Metrices includes: Precision, Recall and F1-score
+Macro Metrices includes: Macro Precision Average, Macro Recall Average and Macro F1-score Average</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cm</strong> (<em>numpy.ndarray</em>) – 2D confusion matrix.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns: tuple: Following Values</dt><dd><ul class="simple">
+<li><p><strong>metrices</strong> (dict): Model Metrices including list of Precision, Recall and F1-score.</p></li>
+<li><p><strong>macro_metrices</strong> (dict): Model Macro metrices including Macro Precision Average, Macro Recall Average and Macro F1-score Average.</p></li>
+<li><p><strong>acc</strong> (numpy.float64): Accuracy of the prediction.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metrics</span><span class="p">,</span> <span class="n">macro_metrics</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">model_metrics</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.plot_confusion_matrix">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">plot_confusion_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cm</span></em>, <em class="sig-param"><span class="n">dataset_type</span></em>, <em class="sig-param"><span class="n">dataset</span><span class="o">=</span><span class="default_value">'mnist'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#plot_confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.plot_confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the Heatmap of the confusion matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cm</strong> (<em>numpy.ndarray</em>) – 2D confusion matrix.</p></li>
+<li><p><strong>dataset_type</strong> (<em>str</em>) – Type of dataset. May be training or dev or test.</p></li>
+<li><p><strong>dataset</strong> (<em>str</em>) – Dataset used to train the model. Default to ‘mnist’</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.precision">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">precision</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">label</span></em>, <em class="sig-param"><span class="n">cm</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the precision for the prediction of an individual label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<em>int</em>) – unique labels (each class).</p></li>
+<li><p><strong>cm</strong> (<em>numpy.ndarray</em>) – 2D confusion matrix.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>prec</strong>: Precision for the given label.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.float64</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cm</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">4</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">label</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prec</span> <span class="o">=</span> <span class="n">precision</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">cm</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">prec</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><p>0.8</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.rand_mini_batches">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">rand_mini_batches</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">minibatch_size</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#rand_mini_batches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.rand_mini_batches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the minibatches of X and corresponding Y of the given size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>numpy.ndarray</em>) – Inputs Array.</p></li>
+<li><p><strong>Y</strong> (<em>numpy.ndarray</em>) – Output Labels.</p></li>
+<li><p><strong>minibatch_size</strong> (<em>int</em>) – Size of each minibatch.</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – Seed value for randomness.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>minibatches</strong>: List of minibatches where each minibatch contains a minibatch of X and a minibatch of its corresponding Y.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">minibatches</span> <span class="o">=</span> <span class="n">rand_mini_batches</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">minibatch_size</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">minibatches</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">minibatches</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Outputs:</dt><dd><p>(20, 4)
+(1, 4)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.recall">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">recall</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">label</span></em>, <em class="sig-param"><span class="n">cm</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#recall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.recall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the recall for the prediction of an individual label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<em>int</em>) – unique labels (each class).</p></li>
+<li><p><strong>cm</strong> (<em>numpy.ndarray</em>) – 2D confusion matrix.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>rec</strong>: Recall for the given label.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.float64</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cm</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">4</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">label</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rec</span> <span class="o">=</span> <span class="n">recall</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">cm</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><p>1.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.relu">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">relu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Z</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.relu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the ReLU activation of Z.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Z</strong> (<em>numpy.ndarray</em>) – Input Sum to a hidden unit, Z = W * X + b.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Following values
+- <strong>A</strong> (numpy.ndarray): Activation obtained by applying ReLU function to the sum. Size same as that of Z.
+- <strong>cache</strong> (numpy.ndarray): Value stored for use during backward propagation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="p">,</span><span class="n">cache</span> <span class="o">=</span> <span class="n">relu</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><p>[[1.62434536 0.     0.      0.      0.86540763 0.    ]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.relu_grad">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">relu_grad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dA</span></em>, <em class="sig-param"><span class="n">cache</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#relu_grad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.relu_grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the backward ReLU activation of dA.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dA</strong> (<em>numpy.ndarray</em>) – Gradient of activation of the previous layer.</p></li>
+<li><p><strong>cache</strong> (<em>numpy.ndarray</em>) – Value of Z stored during forward prop.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>dZ</strong>: array of gradient/derivative of the dA, Same size of dA.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dZ</span> <span class="o">=</span> <span class="n">relu_grad</span><span class="p">(</span><span class="n">dA</span><span class="p">,</span><span class="n">cache</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dZ</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><p>[[ 1.62434536  0.         -0.52817175  0.          0.86540763  0.        ]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.save_model">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">save_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span></em>, <em class="sig-param"><span class="n">model</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#save_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.save_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the parameters of the trained model into a pickle file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – name of the file to be saved.</p></li>
+<li><p><strong>model</strong> (<em>dict</em>) – trained model to be saved in the file. Consists of Parameters and activations</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">save_model</span><span class="p">(</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="n">fname</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.softmax">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">softmax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Z</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#softmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.softmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the softmax activtion of Z.</p>
+<dl class="simple">
+<dt>Argument:</dt><dd><p>Z (numpy.ndarray): Input Sum to a hidden unit, Z = W * X + b.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Following Values
+- <strong>A</strong> (numpy.ndarray): Activation obtained by applying softmax function to the sum. Size same as that of Z.
+- <strong>cache</strong> (numpy.ndarray): Value stored for use during backward propagation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Z</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="p">,</span><span class="n">cache</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Output:</dt><dd><dl class="simple">
+<dt>[[0.15477477]</dt><dd><p>[0.10270926]
+[0.17340649]
+[0.15467071]
+[0.15237489]
+[0.13925557]
+[0.12280831]]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.visualize_mislabelled_images">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">visualize_mislabelled_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_orig</span></em>, <em class="sig-param"><span class="n">y_orig</span></em>, <em class="sig-param"><span class="n">prediction</span></em>, <em class="sig-param"><span class="n">dataset_type</span></em>, <em class="sig-param"><span class="n">dataset</span><span class="o">=</span><span class="default_value">'mnist'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#visualize_mislabelled_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.visualize_mislabelled_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays 10 wrongly predicted images along with their true and predicted labels.
+Both initial prediction and second guess are displayed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_orig</strong> (<em>numpy.ndarray</em>) – original input data.</p></li>
+<li><p><strong>y_orig</strong> (<em>numpy.ndarray</em>) – original output labels.</p></li>
+<li><p><strong>prediction</strong> (<em>numpy.ndarray</em>) – predictions obtained after training the model.</p></li>
+<li><p><strong>dataset_type</strong> (<em>str</em>) – Type of dataset. May be training, dev  or test.</p></li>
+<li><p><strong>dataset</strong> (<em>str</em>) – Dataset used to train the model. Default to ‘mnist’</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">visualize_mislabelled_images</span><span class="p">(</span><span class="n">x_orig</span><span class="p">,</span> <span class="n">y_orig</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">dataset_type</span> <span class="o">=</span> <span class="s2">&quot;training&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.visualize_prediction">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">visualize_prediction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_orig</span></em>, <em class="sig-param"><span class="n">y_orig</span></em>, <em class="sig-param"><span class="n">prediction</span></em>, <em class="sig-param"><span class="n">dataset_type</span></em>, <em class="sig-param"><span class="n">dataset</span><span class="o">=</span><span class="default_value">'mnist'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#visualize_prediction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.visualize_prediction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays 10 random images along with their true and predicted labels.
+Both initial prediction and second guess are displayed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_orig</strong> (<em>numpy.ndarray</em>) – original input data.</p></li>
+<li><p><strong>y_orig</strong> (<em>numpy.ndarray</em>) – original output labels.</p></li>
+<li><p><strong>prediction</strong> (<em>numpy.ndarray</em>) – predictions obtained after training the model.</p></li>
+<li><p><strong>dataset_type</strong> (<em>str</em>) – Type of dataset. May be training, dev  or test.</p></li>
+<li><p><strong>dataset</strong> (<em>str</em>) – Dataset used to train the model. Default to ‘mnist’</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">visualize_prediction</span><span class="p">(</span><span class="n">x_orig</span><span class="p">,</span> <span class="n">y_orig</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">prediction</span><span class="p">,</span> <span class="n">dataset_type</span> <span class="o">=</span> <span class="s2">&quot;training&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ModelUtils.visualize_training_results">
+<code class="sig-prename descclassname">ModelUtils.</code><code class="sig-name descname">visualize_training_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">train_accs</span></em>, <em class="sig-param"><span class="n">val_accs</span></em>, <em class="sig-param"><span class="n">train_loss</span></em>, <em class="sig-param"><span class="n">val_loss</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelUtils.html#visualize_training_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ModelUtils.visualize_training_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the traininig accuracy and loss, validation accuracy and loss over the training time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_accs</strong> (<em>list</em>) – training accuracies obtained in all the minibatches in all epochs</p></li>
+<li><p><strong>val_accs</strong> (<em>list</em>) – validation accuracies obtained in all the minibatches in all epochs</p></li>
+<li><p><strong>train_loss</strong> (<em>list</em>) – training losses obtained in all the minibatches in all epochs</p></li>
+<li><p><strong>val_loss</strong> (<em>list</em>) – validation losses obtained in all the minibatches in all epochs</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">visualize_training_results</span><span class="p">(</span><span class="n">train_accs</span><span class="p">,</span> <span class="n">val_accs</span><span class="p">,</span> <span class="n">train_losses</span><span class="p">,</span> <span class="n">val_losses</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HandWritten Digit Recognizer 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Sameer Kattel.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>
